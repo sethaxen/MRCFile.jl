@@ -1,0 +1,3 @@
+module MRC
+
+end # module
