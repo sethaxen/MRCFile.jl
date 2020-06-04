@@ -25,17 +25,17 @@ struct MRCHeader
     ispg::Int32
     nsymbt::Int32
     extra1::NTuple{8,UInt8}
-    exttyp::String # String
+    exttyp::String
     nversion::Int32
     extra2::NTuple{84,UInt8}
     origin_x::Float32
     origin_y::Float32
     origin_z::Float32
-    map::String # String
+    map::String
     machst::NTuple{4,UInt8}
     rms::Float32
     nlabl::Int32
-    label::Vector{String} # NTuple{10,String}
+    label::Vector{String}
 end
 
 function sizeoffield(name, type)
