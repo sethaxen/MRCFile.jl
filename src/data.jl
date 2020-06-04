@@ -1,3 +1,17 @@
+@enum MRCDataType Image ImageStack Volume VolumeStack Unknown
+
+function mrcdatatype(header)
+    return if header.ispg == 0
+        ifelse(header.mz == 1, Image, ImageStack)
+    elseif header.ispg == 1 && header.mz == header.nz
+        Volume
+    elseif header.ispg == 401
+        VolumeStack
+    else
+        Unknown
+    end
+end
+
 struct MRCData{T<:Number,N,EH,D} <: AbstractArray{T,N}
     header::MRCHeader
     extendedheader::EH
@@ -13,7 +27,16 @@ function MRCData(header, extendedheader = MRCExtendedHeader())
         error("Mode $(header.mode) does not correspond to a known data type.")
     end
     dtype = MODE_TO_TYPE[header.mode]
-    data = Array{dtype,length(data_size)}(undef, data_size)
+    datatype = mrcdatatype(header)
+    dims = if datatype == Image
+        2
+    elseif datatype in (ImageStack, Volume, Unknown)
+        3
+    else
+        error("Data type of $(datatype) is not currently supported.")
+    end
+    ArrayType = Array{dtype,dims}
+    data = ArrayType(undef, data_size[1:dims])
     return MRCData(header, extendedheader, data)
 end
 
