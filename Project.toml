@@ -3,7 +3,13 @@ uuid = "c18c01d3-0ab9-49c3-bd2d-8f2e64a2b7a5"
 authors = ["Seth Axen <seth.axen@gmail.com>"]
 version = "0.1.0"
 
+[deps]
+CodecBzip2 = "523fee87-0ab8-5b00-afb7-3ecf72e48cfd"
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
+
 [compat]
+CodecBzip2 = "0.7"
+CodecZlib = "0.7"
 julia = "^1"
 
 [extras]

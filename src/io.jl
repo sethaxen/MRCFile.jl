@@ -24,3 +24,10 @@ function Base.read(io::IO, ::Type{T}) where {T<:MRCData}
     read!(io, d.data)
     return d
 end
+
+function Base.read(fn::AbstractString, ::Type{T}) where {T<:MRCData}
+    return open(fn, "r") do io
+        newio = wrapstream(io)
+        return read(newio, T)
+    end
+end
