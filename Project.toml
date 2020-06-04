@@ -3,13 +3,11 @@ uuid = "c18c01d3-0ab9-49c3-bd2d-8f2e64a2b7a5"
 authors = ["Seth Axen <seth.axen@gmail.com>"]
 version = "0.1.0"
 
-[deps]
+[compat]
+julia = "^1"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test"]
-
-[compat]
-julia = "^1"
