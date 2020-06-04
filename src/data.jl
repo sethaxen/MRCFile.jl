@@ -23,8 +23,6 @@ extendedheader(d::MRCVolume) = d.extendedheader
 
 @inline Base.parent(d::MRCVolume) = d.data
 
-data(d::MRCVolume) = parent(d)
-
 @inline Base.getindex(d::MRCVolume, idx::Int...) = getindex(parent(d), idx...)
 
 @inline Base.setindex!(d::MRCVolume, val, idx::Int...) = setindex!(parent(d), val, idx...)
