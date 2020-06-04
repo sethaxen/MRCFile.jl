@@ -35,8 +35,7 @@ function MRCData(header, extendedheader = MRCExtendedHeader())
     else
         error("Data type of $(datatype) is not currently supported.")
     end
-    ArrayType = Array{dtype,dims}
-    data = ArrayType(undef, data_size[1:dims])
+    data = Array{dtype,dims}(undef, data_size[1:dims])
     return MRCData(header, extendedheader, data)
 end
 
