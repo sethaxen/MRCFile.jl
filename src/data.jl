@@ -9,7 +9,11 @@ end
 function MRCVolume(header, extendedheader = MRCExtendedHeader())
     data_size = (header.nx, header.ny, header.nz)
     data_length = prod(data_size)
-    data = Array{Float32,length(data_size)}(undef, data_size)
+    if !haskey(MODE_TO_TYPE, header.mode)
+        error("Mode $(header.mode) does not correspond to a known data type.")
+    end
+    dtype = MODE_TO_TYPE[header.mode]
+    data = Array{dtype,length(data_size)}(undef, data_size)
     return MRCVolume(header, extendedheader, data)
 end
 
