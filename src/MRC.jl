@@ -1,7 +1,7 @@
 module MRC
 
-export data, header, extended_header, origin, celldims, cellangles, griddims
 export MRCHeader, MRCExtendedHeader, MRCData
+export data, header, extendedheader, origin, celldims, cellangles, griddims
 
 const HEADER_LENGTH = 1024
 const MODE_TO_TYPE = Dict(
