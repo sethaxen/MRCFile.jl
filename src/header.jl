@@ -55,17 +55,12 @@ function convertfield(name, type, pointer)
     return unsafe_load(convert(Ptr{type}, pointer))
 end
 
-function swapbytes(name, val)
-    name === :exttyp && return val
-    name === :map && return val
-    name === :label && return val
-    return ntoh(val)
-end
-swapbytes(name, val::Tuple) = map(ntoh, val)
-swapbytes(name, val::Number) = ntoh(val)
+swapbytes(val) = val
+swapbytes(val::Number) = bswap(val)
+swapbytes(val::NTuple{N,Number}) where {N} = map(bswap, val)
 function swapbytes(h::MRCHeader)
     vals = map(fieldnames(typeof(h))) do n
-        return swapbytes(n, getfield(h, n))
+        return swapbytes(getfield(h, n))
     end
     return typeof(h)(vals...)
 end
