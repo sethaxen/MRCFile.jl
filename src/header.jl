@@ -58,7 +58,6 @@ end
 function swapbytes(name, val)
     name === :exttyp && return val
     name === :map && return val
-    name === :exttyp && return val
     name === :label && return val
     return ntoh(val)
 end
