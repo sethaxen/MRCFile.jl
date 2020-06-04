@@ -17,11 +17,11 @@ function read_extended_header!(io::IO, ::Type{T}, h::MRCHeader) where {T<:MRCExt
     return T(data)
 end
 
-function Base.read(io::IO, ::Type{T}) where {T<:MRCVolume}
+function Base.read(io::IO, ::Type{T}) where {T<:MRCData}
     header = read_header!(io, MRCHeader)
 
     extendedheader = read_extended_header!(io, MRCExtendedHeader, header)
-    d = MRCVolume(header, extendedheader)
+    d = MRCData(header, extendedheader)
     read!(io, d.data)
     return d
 end
