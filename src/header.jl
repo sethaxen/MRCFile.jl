@@ -68,7 +68,7 @@ end
 @generated function fieldoffsets(::Type{T}) where {T}
     sizes = map(sizeoffield, fieldnames(T), T.types)
     offsets = cumsum(sizes)
-    sz = pop!(offsets)
+    pop!(offsets)
     pushfirst!(offsets, 0)
     return offsets
 end
