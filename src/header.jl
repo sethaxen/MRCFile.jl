@@ -1,4 +1,3 @@
-
 struct MRCHeader
     nx::Int32
     ny::Int32
