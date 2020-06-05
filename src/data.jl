@@ -44,6 +44,30 @@ header(d::MRCData) = d.header
 
 extendedheader(d::MRCData) = d.extendedheader
 
+cellangles(d::MRCData) = cellangles(header(d))
+cellangles(d::MRCData{<:Any,2}) = cellangles(header(d))[1:2]
+
+cellsize(d::MRCData) = cellsize(header(d))
+cellsize(d::MRCData{<:Any,2}) = cellsize(header(d))[1:2]
+
+gridsize(d::MRCData) = gridsize(header(d))
+gridsize(d::MRCData{<:Any,2}) = gridsize(header(d))[1:2]
+
+origin(d::MRCData) = origin(header(d))
+origin(d::MRCData{<:Any,2}) = origin(header(d))[1:2]
+
+start(d::MRCData) = start(header(d))
+start(d::MRCData{<:Any,2}) = start(header(d))[1:2]
+
+voxelaxes(d::MRCData, i) = voxelaxes(header(d), i)
+voxelaxes(d::MRCData) = voxelaxes(header(d))
+voxelaxes(d::MRCData{<:Any,2}) = voxelaxes(header(d))[1:2]
+
+voxelsize(d::MRCData, i) = voxelsize(header(d), i)
+voxelsize(d::MRCData) = voxelsize(header(d))
+voxelsize(d::MRCData{<:Any,2}) = voxelsize(header(d))[1:2]
+
+# Array overloads
 @inline Base.parent(d::MRCData) = d.data
 
 @inline Base.getindex(d::MRCData, idx::Int...) = getindex(parent(d), idx...)
@@ -64,11 +88,3 @@ Base.lastindex(d::MRCData) = lastindex(parent(d))
 function Base.similar(d::MRCData)
     return typeof(d)(header(d), extendedheader(d), similar(parent(d)))
 end
-
-origin(d::MRCData) = origin(header(d))
-
-celldims(d::MRCData) = celldims(header(d))
-
-cellangles(d::MRCData) = cellangles(header(d))
-
-griddims(d::MRCData) = griddims(header(d))

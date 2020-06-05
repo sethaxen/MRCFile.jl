@@ -79,12 +79,21 @@ end
     return offsets
 end
 
-origin(h::MRCHeader) = (x = h.origin_x, y = h.origin_y, z = h.origin_z)
 
-celldims(h::MRCHeader) = (x = h.cella_x, y = h.cella_y, z = h.cella_z)
 
-function cellangles(h::MRCHeader)
-    return (alpha = h.cellb_alpha, beta = h.cellb_beta, gamma = h.cellb_gamma)
-end
+cellangles(h::MRCHeader) = h.cellb
 
-griddims(h::MRCHeader) = (x = h.mx, y = h.my, z = h.mz)
+cellsize(h::MRCHeader) = (h.cella_x, h.cella_y, h.cella_z)
+
+gridsize(h::MRCHeader) = (h.mx, h.my, h.mz)
+
+origin(h::MRCHeader) = h.origin
+
+start(h::MRCHeader) = (h.nxstart, h.nystart, h.nzstart)
+
+voxelaxes(h::MRCHeader, i) = StepRangeLen(start(h)[i], voxelsize(h)[i], size(h)[i])
+voxelaxes(h::MRCHeader) = ntuple(i -> voxelaxes(h, i), Val(3))
+
+voxelsize(h::MRCHeader, i) = cellsize(h)[i] / gridsize(h)[i]
+voxelsize(h::MRCHeader) = ntuple(i -> voxelsize(h, i), Val(3))
+

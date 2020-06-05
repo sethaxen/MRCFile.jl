@@ -3,7 +3,16 @@ module MRC
 using CodecZlib, CodecBzip2
 
 export MRCHeader, MRCExtendedHeader, MRCData
-export data, header, extendedheader, origin, celldims, cellangles, griddims
+export cellangles,
+    cellsize,
+    data,
+    extendedheader,
+    gridsize,
+    header,
+    origin,
+    start,
+    voxelaxes,
+    voxelsize
 
 const GZ_MAGIC = UInt8[0x1f, 0x8b, 0x08]
 const BZ2_MAGIC = UInt8[0x42, 0x5A, 0x68]
