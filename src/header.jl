@@ -79,7 +79,9 @@ end
     return offsets
 end
 
+Base.size(h::MRCHeader) = (h.nx, h.ny, h.nz)
 
+Base.length(h::MRCHeader) = prod(size(h))
 
 cellangles(h::MRCHeader) = h.cellb
 
@@ -97,3 +99,8 @@ voxelaxes(h::MRCHeader) = ntuple(i -> voxelaxes(h, i), Val(3))
 voxelsize(h::MRCHeader, i) = cellsize(h)[i] / gridsize(h)[i]
 voxelsize(h::MRCHeader) = ntuple(i -> voxelsize(h, i), Val(3))
 
+Base.minimum(h::MRCHeader) = h.dmin
+
+Base.maximum(h::MRCHeader) = h.dmax
+
+Statistics.mean(h::MRCHeader) = h.dmean

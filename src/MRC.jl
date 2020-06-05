@@ -1,5 +1,6 @@
 module MRC
 
+using Statistics
 using CodecZlib, CodecBzip2
 
 export MRCHeader, MRCExtendedHeader, MRCData
