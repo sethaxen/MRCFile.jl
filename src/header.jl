@@ -83,13 +83,13 @@ Base.size(h::MRCHeader) = (h.nx, h.ny, h.nz)
 
 Base.length(h::MRCHeader) = prod(size(h))
 
-cellangles(h::MRCHeader) = h.cellb
+cellangles(h::MRCHeader) = (h.cellb_alpha, h.cellb_beta, h.cellb_gamma)
 
 cellsize(h::MRCHeader) = (h.cella_x, h.cella_y, h.cella_z)
 
 gridsize(h::MRCHeader) = (h.mx, h.my, h.mz)
 
-origin(h::MRCHeader) = h.origin
+origin(h::MRCHeader) = (h.origin_x, h.origin_y, h.origin_z)
 
 start(h::MRCHeader) = (h.nxstart, h.nystart, h.nzstart)
 

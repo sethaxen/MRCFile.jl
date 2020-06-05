@@ -47,28 +47,30 @@ header(d::MRCData) = d.header
 
 extendedheader(d::MRCData) = d.extendedheader
 
+firsttwo(t::Tuple) = ntuple(i -> t[i], 2)
+
 cellangles(d::MRCData) = cellangles(header(d))
-cellangles(d::MRCData{<:Any,2}) = cellangles(header(d))[1:2]
+cellangles(d::MRCData{<:Any,2}) = firsttwo(cellangles(header(d)))
 
 cellsize(d::MRCData) = cellsize(header(d))
-cellsize(d::MRCData{<:Any,2}) = cellsize(header(d))[1:2]
+cellsize(d::MRCData{<:Any,2}) = firsttwo(cellsize(header(d)))
 
 gridsize(d::MRCData) = gridsize(header(d))
-gridsize(d::MRCData{<:Any,2}) = gridsize(header(d))[1:2]
+gridsize(d::MRCData{<:Any,2}) = firsttwo(gridsize(header(d)))
 
 origin(d::MRCData) = origin(header(d))
-origin(d::MRCData{<:Any,2}) = origin(header(d))[1:2]
+origin(d::MRCData{<:Any,2}) = firsttwo(origin(header(d)))
 
 start(d::MRCData) = start(header(d))
-start(d::MRCData{<:Any,2}) = start(header(d))[1:2]
+start(d::MRCData{<:Any,2}) = firsttwo(start(header(d)))
 
 voxelaxes(d::MRCData, i) = voxelaxes(header(d), i)
 voxelaxes(d::MRCData) = voxelaxes(header(d))
-voxelaxes(d::MRCData{<:Any,2}) = voxelaxes(header(d))[1:2]
+voxelaxes(d::MRCData{<:Any,2}) = firsttwo(voxelaxes(header(d)))
 
 voxelsize(d::MRCData, i) = voxelsize(header(d), i)
 voxelsize(d::MRCData) = voxelsize(header(d))
-voxelsize(d::MRCData{<:Any,2}) = voxelsize(header(d))[1:2]
+voxelsize(d::MRCData{<:Any,2}) = firsttwo(voxelsize(header(d)))
 
 # Array overloads
 @inline Base.parent(d::MRCData) = d.data
