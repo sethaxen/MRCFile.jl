@@ -37,13 +37,6 @@ struct MRCHeader
     label::Vector{String}
 end
 
-function Base.getproperty(h::MRCHeader, f::Symbol)
-    f === :origin && return (h.origin_x, h.origin_y, h.origin_z)
-    f === :cella && return (h.cella_x, h.cella_y, h.cella_z)
-    f === :cellb && return (h.cellb_alpha, h.cellb_beta, h.cellb_gamma)
-    return getfield(h, f)
-end
-
 function sizeoffield(name, type)
     name === :exttyp && return 4
     name === :map && return 4
