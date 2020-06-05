@@ -37,6 +37,15 @@ struct MRCHeader
     label::Vector{String}
 end
 
+function Base.show(io::IO, mime::MIME"text/plain", h::MRCHeader)
+    print(io, "MRCHeader(")
+    for f in fieldnames(typeof(h))
+        print(io, "\n    $(f) = $(getfield(h, f)),")
+    end
+    print(io, "\n)")
+    return nothing
+end
+
 function sizeoffield(name, type)
     name === :exttyp && return 4
     name === :map && return 4
