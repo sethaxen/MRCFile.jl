@@ -37,6 +37,9 @@ function MRCData(header, extendedheader = MRCExtendedHeader())
         error("Data type of $(datatype) is not currently supported.")
     end
     data = Array{dtype,dims}(undef, data_size[1:dims])
+    if dtype === UInt16 # make array actually usable by appearing signed
+        data = reinterpret(Int16, data)
+    end
     return MRCData(header, extendedheader, data)
 end
 
