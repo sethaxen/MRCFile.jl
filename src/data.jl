@@ -1,16 +1,17 @@
 @enum MRCDataType Image ImageStack Volume VolumeStack Unknown
 
-function mrcdatatype(header)
-    return if header.ispg == 0
-        ifelse(header.mz == 1, Image, ImageStack)
-    elseif header.ispg == 1 && header.mz == header.nz
+function mrcdatatype(nz, mz, ispg)
+    return if ispg == 0
+        ifelse(mz == 1, Image, ImageStack)
+    elseif ispg == 1 && mz == nz
         Volume
-    elseif header.ispg == 401
+    elseif ispg ∈ 401:630
         VolumeStack
     else
         Unknown
     end
 end
+mrcdatatype(header) = mrcdatatype(header.nz, header.mz, header.ispg)
 
 struct MRCData{T<:Number,N,EH,D} <: AbstractArray{T,N}
     header::MRCHeader
