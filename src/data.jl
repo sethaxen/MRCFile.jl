@@ -1,4 +1,4 @@
-struct MRCData{T<:Number,N,EH,D} <: AbstractArray{T,N}
+mutable struct MRCData{T<:Number,N,EH,D} <: AbstractArray{T,N}
     header::MRCHeader
     extendedheader::EH
     data::D
@@ -18,31 +18,7 @@ end
 
 header(d::MRCData) = d.header
 
-header!(d::MRCData, h::MRCHeader) = copyto!(header(d), h)
-
 extendedheader(d::MRCData) = d.extendedheader
-
-extendedheader!(d::MRCData, data) = extendedheader(d).data = data
-extendedheader!(d::MRCData, eh::MRCExtendedHeader) = extendedheader!(d, eh.data)
-
-@inline firsttwo(t) = (t[1], t[2])
-
-for f in (:cellangles, :cellsize, :gridsize, :origin, :start, :voxelaxes, :voxelsize)
-    f! = Symbol(f, !)
-    @eval begin
-        $(f)(d::MRCData) = $(f)(header(d))
-        $(f)(d::MRCData{<:Any,2}) = firsttwo($(f)(header(d)))
-
-        $(f!)(d::MRCData, v) = $(f!)(header(d), v)
-        $(f!)(d::MRCData{<:Any,2}, v::Number) = firsttwo($(f!)(header(d)), (v, v, zero(v)))
-    end
-end
-
-voxelaxes(d::MRCData, i) = voxelaxes(header(d), i)
-
-voxelsize(d::MRCData, i) = voxelsize(header(d), i)
-
-voxelsize!(d::MRCData, s, i) = voxelsize!(header(d), s, i)
 
 # Array overloads
 @inline Base.parent(d::MRCData) = d.data
