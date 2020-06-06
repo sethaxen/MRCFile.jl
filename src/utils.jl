@@ -1,5 +1,10 @@
 byteorder() = ifelse(Base.ENDIAN_BOM == 0x04030201, <, >)
 
+"""
+    smartopen(f::Function, args...; kwargs...)
+
+Open a file and call `f` on the io stream, decompressing if the file has gz or bz2 magic.
+"""
 function smartopen(f::Function, args...; kwargs...)
     io = open(args...; kwargs...)
     magic = Tuple(read(io, 3))

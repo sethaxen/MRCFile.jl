@@ -1,3 +1,8 @@
+"""
+    MRCHeader
+
+An MRC header.
+"""
 mutable struct MRCHeader
     nx::Int32
     ny::Int32
@@ -134,8 +139,18 @@ function Base.ndims(h::MRCHeader)
     end
 end
 
+"""
+    cellangles(h::MRCHeader) -> (α, β, γ)
+
+Get cell angles in degrees.
+"""
 cellangles(h::MRCHeader) = (h.cellb_alpha, h.cellb_beta, h.cellb_gamma)
 
+"""
+    cellangles!(h::MRCHeader, (α, β, γ))
+
+Set cell angles in degrees.
+"""
 function cellangles!(h::MRCHeader, cellb)
     h.cellb_alpha = cellb[1]
     h.cellb_beta = cellb[2]
@@ -144,8 +159,18 @@ function cellangles!(h::MRCHeader, cellb)
 end
 cellangles!(h::MRCHeader, cellb::Number) = cellangles!(h, ntuple(_ -> cellb, Val(3)))
 
+"""
+    cellsize(h::MRCHeader) -> (x, y, z)
+
+Get cell dimensions in angstroms.
+"""
 cellsize(h::MRCHeader) = (h.cella_x, h.cella_y, h.cella_z)
 
+"""
+    cellsize!(h::MRCHeader, (x, y, z))
+
+Set cell dimensions in angstroms.
+"""
 function cellsize!(h::MRCHeader, cella)
     h.cella_x = cella[1]
     h.cella_y = cella[2]
@@ -154,8 +179,18 @@ function cellsize!(h::MRCHeader, cella)
 end
 cellsize!(h::MRCHeader, cella::Number) = cellsize!(h, ntuple(_ -> cella, Val(3)))
 
+"""
+    gridsize(h::MRCHeader) -> (x, y, z)
+
+Get size of sampling grid in angstroms.
+"""
 gridsize(h::MRCHeader) = (h.mx, h.my, h.mz)
 
+"""
+    gridsize!(h::MRCHeader, (x, y, z))
+
+Set size of sampling grid in angstroms.
+"""
 function gridsize!(h::MRCHeader, m)
     h.mx = m[1]
     h.my = m[2]
@@ -164,8 +199,18 @@ function gridsize!(h::MRCHeader, m)
 end
 gridsize!(h::MRCHeader, m::Number) = gridsize!(h, ntuple(_ -> m, Val(3)))
 
+"""
+    origin(h::MRCHeader) -> (x, y, z)
+
+Get phase origin in pixels or origin of subvolume in angstroms.
+"""
 origin(h::MRCHeader) = (h.origin_x, h.origin_y, h.origin_z)
 
+"""
+    origin!(h::MRCHeader, (x, y, z))
+
+Set phase origin in pixels or origin of subvolume in angstroms.
+"""
 function origin!(h::MRCHeader, origin)
     h.origin_x = origin[1]
     h.origin_y = origin[2]
@@ -174,8 +219,18 @@ function origin!(h::MRCHeader, origin)
 end
 origin!(h::MRCHeader, origin::Number) = origin!(h, ntuple(_ -> origin, Val(3)))
 
+"""
+    start(h::MRCHeader) -> (nx, ny, nz)
+
+Get location of first column, first row, and first section in unit cell.
+"""
 start(h::MRCHeader) = (h.nxstart, h.nystart, h.nzstart)
 
+"""
+    start!(h::MRCHeader, (nx, ny, nz))
+
+Set location of first column, first row, and first section in unit cell.
+"""
 function start!(h::MRCHeader, nstart)
     h.nxstart = nstart[1]
     h.nystart = nstart[2]
@@ -184,12 +239,30 @@ function start!(h::MRCHeader, nstart)
 end
 start!(h::MRCHeader, nstart::Number) = start!(h, ntuple(_ -> nstart, Val(3)))
 
+"""
+    voxelaxes(h::MRCHeader, i) -> StepRangeLen
+    voxelaxes(h::MRCHeader) -> NTuple{3,StepRangeLen}
+
+Get range of voxel positions along axis `i` or all axes.
+"""
 voxelaxes(h::MRCHeader, i) = StepRangeLen(start(h)[i], voxelsize(h)[i], size(h)[i])
 voxelaxes(h::MRCHeader) = ntuple(i -> voxelaxes(h, i), Val(3))
 
+"""
+    voxelsize(h::MRCHeader, i)
+    voxelsize(h::MRCHeader)
+
+Get size of dimension i of voxel in angstroms.
+"""
 voxelsize(h::MRCHeader, i) = cellsize(h)[i] / gridsize(h)[i]
 voxelsize(h::MRCHeader) = ntuple(i -> voxelsize(h, i), Val(3))
 
+"""
+    voxelsize!(h::MRCHeader, s, i)
+    voxelsize!(h::MRCHeaders, (x, y, z))
+
+Set size of dimension i of voxel in angstroms.
+"""
 function voxelsize!(h::MRCHeader, s, i)
     setproperty!(h, (:cella_x, :cella_y, :cella_z)[i], s * getfield(h, (:mx, :my, :mz)[i]))
     return s

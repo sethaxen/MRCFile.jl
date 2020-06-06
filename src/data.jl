@@ -1,4 +1,28 @@
-mutable struct MRCData{T<:Number,N,EH,D} <: AbstractArray{T,N}
+"""
+    MRCData{T<:Number,N,EH<:MRCExtendedHeader,D<:AbstractArray{T,N}} <: AbstractArray{T,N}
+
+Container for electron density data loaded from an MRC file.
+
+Each instance of `MRCData` carries with it a header and extended header, respectively
+accessed with [`header`](@ref) and [`extendedheader`](@ref).
+
+If changes are made to the header, extended header, or the data, call [`updateheader!`]
+before writing to file to ensure the header is stil consistent with the data.
+
+    MRCData()
+
+Create an empty array.
+
+    MRCData(header[, extendedheader])
+
+Create an array whose size is indicated by the entries in `header`.
+
+    MRCData(size)
+    MRCData(size...)
+
+Create an array of the specified size.
+"""
+struct MRCData{T<:Number,N,EH,D} <: AbstractArray{T,N}
     header::MRCHeader
     extendedheader::EH
     data::D
@@ -24,8 +48,18 @@ function MRCData(size::NTuple{3,<:Integer})
 end
 MRCData(size::Integer...) = MRCData(size)
 
+"""
+    header(data::MRCData) -> MRCHeader
+
+Get header.
+"""
 header(d::MRCData) = d.header
 
+"""
+    extendedheader(data::MRCData) -> MRCExtendedHeader
+
+Get extended header.
+"""
 extendedheader(d::MRCData) = d.extendedheader
 
 """
