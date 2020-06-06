@@ -1,3 +1,22 @@
+"""
+    read(io::IO, ::Type{T}) where {T<:MRCData}
+    read(fn::AbstractString, ::Type{T}) where {T<:MRCData}
+
+Read an instance of [`MRCData`](@ref) from an io stream or closed file.
+If a filename is passed, the file is checked for gz or bz2 compression.
+"""
+read(::Any, ::Type{<:MRCData})
+function Base.read(io::IO, ::Type{T}) where {T<:MRCData}
+    header = _read(io, MRCHeader)
+    extendedheader = _read(io, MRCExtendedHeader, header)
+    d = MRCData(header, extendedheader)
+    read!(io, d.data)
+    return d
+end
+function Base.read(fn::AbstractString, ::Type{T}) where {T<:MRCData}
+    return smartopen(io -> read(io, T), fn, "r")
+end
+
 function _read(io::IO, ::Type{T}) where {T<:MRCHeader}
     names = fieldnames(T)
     types = T.types
@@ -16,16 +35,4 @@ function _read(io::IO, ::Type{T}, h::MRCHeader) where {T<:MRCExtendedHeader}
     # TODO: use h.exttyp to identify extended header format and parse into a human-readable type
     data = read!(io, Array{UInt8}(undef, exthead_length))
     return T(data)
-end
-
-function Base.read(io::IO, ::Type{T}) where {T<:MRCData}
-    header = _read(io, MRCHeader)
-    extendedheader = _read(io, MRCExtendedHeader, header)
-    d = MRCData(header, extendedheader)
-    read!(io, d.data)
-    return d
-end
-
-function Base.read(fn::AbstractString, ::Type{T}) where {T<:MRCData}
-    return smartopen(io -> read(io, T), fn, "r")
 end
