@@ -68,7 +68,7 @@ function MRCHeader(; kwargs...)
         MAP_NAME,
         MACHINE_STAMP_LITTLE,
         -1,
-        -1,
+        1,
         (
             "Created by MRC.jl at $(Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))",
             ntuple(_ -> "", Val(9))...,
