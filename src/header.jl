@@ -1,4 +1,4 @@
-struct MRCHeader
+mutable struct MRCHeader
     nx::Int32
     ny::Int32
     nz::Int32
