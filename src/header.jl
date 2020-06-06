@@ -34,7 +34,7 @@ mutable struct MRCHeader
     machst::NTuple{4,UInt8}
     rms::Float32
     nlabl::Int32
-    label::Vector{String}
+    label::NTuple{10,String}
 end
 
 function Base.show(io::IO, ::MIME"text/plain", h::MRCHeader)
@@ -66,7 +66,7 @@ function convertfield(name, type, pointer)
     # TODO: strip 0 bytes from ends of strings
     name === :exttyp && return unsafe_string(convert(Ptr{UInt8}, pointer), 4)
     name === :map && return unsafe_string(convert(Ptr{UInt8}, pointer), 4)
-    name === :label && return map(1:10) do i
+    name === :label && return ntuple(Val(10)) do i
         return unsafe_string(convert(Ptr{UInt8}, pointer + (i - 1) * 80), 80)
     end
     return unsafe_load(convert(Ptr{type}, pointer))
