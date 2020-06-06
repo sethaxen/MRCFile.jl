@@ -9,7 +9,7 @@ function smartopen(f::Function, args...; kwargs...)
         ret = f(newio)
         close(newio)
     elseif magic == BZ2_MAGIC
-        Bzip2DecompressorStream(io)
+        newio = Bzip2DecompressorStream(io)
         ret = f(newio)
         close(newio)
     else
