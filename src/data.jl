@@ -157,7 +157,7 @@ function eachstackunit(d::MRCData)
     return if mrcdtype ∈ (Volume, Image)
         (d for _ in 1:1)
     elseif mrcdtype == ImageStack
-        eachmapsection(d::MRCData)
+        eachmapsection(d)
     else
         error("Volume stacks not currently supported.")
     end
