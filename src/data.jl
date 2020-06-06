@@ -1,18 +1,3 @@
-@enum MRCDataType Image ImageStack Volume VolumeStack Unknown
-
-function mrcdatatype(nz, mz, ispg)
-    return if ispg == 0
-        ifelse(mz == 1, Image, ImageStack)
-    elseif ispg == 1 && mz == nz
-        Volume
-    elseif ispg ∈ 401:630
-        VolumeStack
-    else
-        Unknown
-    end
-end
-mrcdatatype(header) = mrcdatatype(header.nz, header.mz, header.ispg)
-
 struct MRCData{T<:Number,N,EH,D} <: AbstractArray{T,N}
     header::MRCHeader
     extendedheader::EH
@@ -22,21 +7,12 @@ function MRCData(header, extendedheader, data::AbstractArray{T,N}) where {T,N}
     return MRCData{T,N,typeof(extendedheader),typeof(data)}(header, extendedheader, data)
 end
 function MRCData(header, extendedheader = MRCExtendedHeader())
-    data_size = (header.nx, header.ny, header.nz)
+    data_size = size(header)
     data_length = prod(data_size)
-    if !haskey(MODE_TO_TYPE, header.mode)
-        error("Mode $(header.mode) does not correspond to a known data type.")
-    end
-    dtype = MODE_TO_TYPE[header.mode]
-    datatype = mrcdatatype(header)
-    dims = if datatype == Image
-        2
-    elseif datatype in (ImageStack, Volume, Unknown)
-        3
-    else
-        error("Data type of $(datatype) is not currently supported.")
-    end
-    data = Array{dtype,dims}(undef, data_size[1:dims])
+    dtype = datatype(header)
+    dims = ndims(header)
+    s = ntuple(i -> data_size[i], dims)
+    data = Array{dtype,dims}(undef, s)
     if dtype === UInt16 # make array actually usable by appearing signed
         data = reinterpret(Int16, data)
     end

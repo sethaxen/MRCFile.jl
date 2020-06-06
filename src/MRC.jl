@@ -19,6 +19,7 @@ const MODE_TO_TYPE = Dict(
     Int32(6) => UInt16,
 )
 const TYPE_TO_MODE = Dict(reverse(p) for p in MODE_TO_TYPE)
+@enum MRCDataType Image ImageStack Volume VolumeStack Unknown
 
 include("utils.jl")
 include("header.jl")

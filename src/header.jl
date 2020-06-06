@@ -85,6 +85,17 @@ Base.size(h::MRCHeader) = (h.nx, h.ny, h.nz)
 
 Base.length(h::MRCHeader) = prod(size(h))
 
+function Base.ndims(h::MRCHeader)
+    mrcdtype = mrcdatatype(h)
+    return if mrcdtype == Image
+        2
+    elseif mrcdtype in (ImageStack, Volume, Unknown)
+        3
+    else
+        error("Data type of $(mrcdtype) is not currently supported.")
+    end
+end
+
 cellangles(h::MRCHeader) = (h.cellb_alpha, h.cellb_beta, h.cellb_gamma)
 
 cellsize(h::MRCHeader) = (h.cella_x, h.cella_y, h.cella_z)
@@ -106,3 +117,24 @@ Base.minimum(h::MRCHeader) = h.dmin
 Base.maximum(h::MRCHeader) = h.dmax
 
 Statistics.mean(h::MRCHeader) = h.dmean
+
+function mrcdatatype(nz, mz, ispg)
+    return if ispg == 0
+        ifelse(mz == 1, Image, ImageStack)
+    elseif ispg == 1 && mz == nz
+        Volume
+    elseif ispg ∈ 401:630
+        VolumeStack
+    else
+        Unknown
+    end
+end
+mrcdatatype(header) = mrcdatatype(header.nz, header.mz, header.ispg)
+
+function datatype(mode)
+    if !haskey(MODE_TO_TYPE, mode)
+        error("Mode $(mode) does not correspond to a known data type.")
+    end
+    return MODE_TO_TYPE[mode]
+end
+datatype(header::MRCHeader) = datatype(header.mode)
