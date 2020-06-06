@@ -1,4 +1,4 @@
-function _read!(io::IO, ::Type{T}) where {T<:MRCHeader}
+function _read(io::IO, ::Type{T}) where {T<:MRCHeader}
     names = fieldnames(T)
     types = T.types
     offsets = fieldoffsets(T)
@@ -11,7 +11,7 @@ function _read!(io::IO, ::Type{T}) where {T<:MRCHeader}
     return header
 end
 
-function _read!(io::IO, ::Type{T}, h::MRCHeader) where {T<:MRCExtendedHeader}
+function _read(io::IO, ::Type{T}, h::MRCHeader) where {T<:MRCExtendedHeader}
     exthead_length = h.nsymbt
     # TODO: use h.exttyp to identify extended header format and parse into a human-readable type
     data = read!(io, Array{UInt8}(undef, exthead_length))
@@ -19,8 +19,8 @@ function _read!(io::IO, ::Type{T}, h::MRCHeader) where {T<:MRCExtendedHeader}
 end
 
 function Base.read(io::IO, ::Type{T}) where {T<:MRCData}
-    header = _read!(io, MRCHeader)
-    extendedheader = _read!(io, MRCExtendedHeader, header)
+    header = _read(io, MRCHeader)
+    extendedheader = _read(io, MRCExtendedHeader, header)
     d = MRCData(header, extendedheader)
     read!(io, d.data)
     return d
