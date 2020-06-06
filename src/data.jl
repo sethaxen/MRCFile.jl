@@ -124,3 +124,41 @@ Base.lastindex(d::MRCData) = lastindex(parent(d))
 function Base.similar(d::MRCData)
     return typeof(d)(header(d), extendedheader(d), similar(parent(d)))
 end
+
+"""
+    eachmaprow(d::MRCData)
+
+Return an iterator over map rows.
+"""
+eachmaprow(d::MRCData) = eachslice(d; dims = header(d).mapr)
+
+"""
+    eachmapcol(d::MRCData)
+
+Return an iterator map columns.
+"""
+eachmapcol(d::MRCData) = eachslice(d; dims = header(d).mapc)
+
+"""
+    eachmapsection(d::MRCData)
+
+Return an iterator over sections.
+"""
+eachmapsection(d::MRCData) = eachslice(d; dims = header(d).maps)
+
+"""
+    eachstackunit(d::MRCData)
+
+Return an iterator over elements of stacks.
+"""
+function eachstackunit(d::MRCData)
+    h = header(d)
+    mrcdtype = mrcdatatype(h)
+    return if mrcdtype ∈ (Volume, Image)
+        (d for _ in 1:1)
+    elseif mrcdtype == ImageStack
+        eachmapsection(d::MRCData)
+    else
+        error("Volume stacks not currently supported.")
+    end
+end
