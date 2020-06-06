@@ -1,4 +1,4 @@
-function read_header!(io::IO, ::Type{T}) where {T<:MRCHeader}
+function _read!(io::IO, ::Type{T}) where {T<:MRCHeader}
     names = fieldnames(T)
     types = T.types
     offsets = fieldoffsets(T)
@@ -11,15 +11,15 @@ function read_header!(io::IO, ::Type{T}) where {T<:MRCHeader}
     return header
 end
 
-function read_extended_header!(io::IO, ::Type{T}, h::MRCHeader) where {T<:MRCExtendedHeader}
+function _read!(io::IO, ::Type{T}, h::MRCHeader) where {T<:MRCExtendedHeader}
     exthead_length = h.nsymbt
     data = read!(io, Array{UInt8}(undef, exthead_length))
     return T(data)
 end
 
 function Base.read(io::IO, ::Type{T}) where {T<:MRCData}
-    header = read_header!(io, MRCHeader)
-    extendedheader = read_extended_header!(io, MRCExtendedHeader, header)
+    header = _read!(io, MRCHeader)
+    extendedheader = _read!(io, MRCExtendedHeader, header)
     d = MRCData(header, extendedheader)
     read!(io, d.data)
     return d
