@@ -46,6 +46,14 @@ function Base.show(io::IO, ::MIME"text/plain", h::MRCHeader)
     return nothing
 end
 
+function Base.copyto!(hto::MRCHeader, hfrom::MRCHeader)
+    hto === hfrom && return hto
+    for f in fieldnames(typeof(hto))
+        setfield!(hto, f, getfield(hfrom, f))
+    end
+    return hto
+end
+
 function sizeoffield(name, type)
     name === :exttyp && return 4
     name === :map && return 4

@@ -18,7 +18,12 @@ end
 
 header(d::MRCData) = d.header
 
+header!(d::MRCData, h::MRCHeader) = copyto!(header(d), h)
+
 extendedheader(d::MRCData) = d.extendedheader
+
+extendedheader!(d::MRCData, data) = extendedheader(d).data = data
+extendedheader!(d::MRCData, eh::MRCExtendedHeader) = extendedheader!(d, eh.data)
 
 firsttwo(t::Tuple) = ntuple(i -> t[i], 2)
 
