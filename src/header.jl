@@ -2,6 +2,11 @@
     MRCHeader
 
 An MRC header.
+
+    MRCHeader()
+    MRCHeader(; kwargs...)
+
+Construct a header with suitable defaults, optionally substituting any provided entries.
 """
 mutable struct MRCHeader
     nx::Int32
@@ -41,8 +46,8 @@ mutable struct MRCHeader
     nlabl::Int32
     label::NTuple{10,String}
 end
-function MRCHeader()
-    return MRCHeader(
+function MRCHeader(; kwargs...)
+    h = MRCHeader(
         ntuple(_ -> 0, Val(13))...,
         90,
         90,
@@ -69,6 +74,10 @@ function MRCHeader()
             ntuple(_ -> "", Val(9))...,
         ),
     )
+    for (k, v) in pairs(kwargs)
+        setproperty!(h, k, v)
+    end
+    return h
 end
 
 function Base.show(io::IO, ::MIME"text/plain", h::MRCHeader)
