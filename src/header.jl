@@ -40,7 +40,8 @@ end
 function Base.show(io::IO, ::MIME"text/plain", h::MRCHeader)
     print(io, "MRCHeader(")
     for f in fieldnames(typeof(h))
-        print(io, "\n    $(f) = $(getfield(h, f)),")
+        v = sprint(show, getfield(h, f); context = io)
+        print(io, "\n    $(f) = $(v),")
     end
     print(io, "\n)")
     return nothing
