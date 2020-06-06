@@ -58,8 +58,8 @@ function MRCHeader(; kwargs...)
         0, # dmin
         -1, # dmax < dmin means both are undetermined
         -2, # dmean < min(dmin, dmax) means dmean is undetermined
-        1, # is a volume
-        0, # empty extended header
+        1, # mode, is a volume
+        0, # nsymbt, empty extended header
         ntuple(_ -> UInt8(0), Val(8)), # extra
         "", # exttyp
         MRC2014_VERSION, # nversion
