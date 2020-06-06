@@ -37,7 +37,7 @@ struct MRCHeader
     label::Vector{String}
 end
 
-function Base.show(io::IO, mime::MIME"text/plain", h::MRCHeader)
+function Base.show(io::IO, ::MIME"text/plain", h::MRCHeader)
     print(io, "MRCHeader(")
     for f in fieldnames(typeof(h))
         print(io, "\n    $(f) = $(getfield(h, f)),")
