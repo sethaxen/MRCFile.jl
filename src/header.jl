@@ -36,6 +36,35 @@ mutable struct MRCHeader
     nlabl::Int32
     label::NTuple{10,String}
 end
+function MRCHeader()
+    return MRCHeader(
+        ntuple(_ -> 0, Val(13))...,
+        90,
+        90,
+        90,
+        1,
+        2,
+        3,
+        0,
+        -1,
+        -2,
+        1,
+        0,
+        ntuple(_ -> UInt8(0), Val(8)),
+        "",
+        MRC2014_VERSION,
+        ntuple(_ -> UInt8(0), Val(84)),
+        ntuple(_ -> 0, Val(3))...,
+        MAP_NAME,
+        MACHINE_STAMP_LITTLE,
+        -1,
+        -1,
+        (
+            "Created by MRC.jl at $(Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))",
+            ntuple(_ -> "", Val(9))...,
+        ),
+    )
+end
 
 function Base.show(io::IO, ::MIME"text/plain", h::MRCHeader)
     print(io, "MRCHeader(")
