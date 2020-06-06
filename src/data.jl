@@ -27,7 +27,7 @@ extendedheader!(d::MRCData, eh::MRCExtendedHeader) = extendedheader!(d, eh.data)
 
 @inline firsttwo(t) = (t[1], t[2])
 
-for f in (:cellangles, :cellsize, :gridsize, :origin, :start, :voxelsize)
+for f in (:cellangles, :cellsize, :gridsize, :origin, :start, :voxelaxes, :voxelsize)
     f! = Symbol(f, !)
     @eval begin
         $(f)(d::MRCData) = $(f)(header(d))
