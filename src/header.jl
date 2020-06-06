@@ -205,6 +205,8 @@ Base.minimum(h::MRCHeader) = h.dmin
 
 Base.maximum(h::MRCHeader) = h.dmax
 
+Base.extrema(h::MRCHeader) = (minimum(h), maximum(h))
+
 Statistics.mean(h::MRCHeader) = h.dmean
 
 function mrcdatatype(nz, mz, ispg)
