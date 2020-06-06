@@ -26,8 +26,5 @@ function Base.read(io::IO, ::Type{T}) where {T<:MRCData}
 end
 
 function Base.read(fn::AbstractString, ::Type{T}) where {T<:MRCData}
-    return open(fn, "r") do io
-        newio = wrapstream(io)
-        return read(newio, T)
-    end
+    return smartopen(io -> read(io, T), fn, "r")
 end

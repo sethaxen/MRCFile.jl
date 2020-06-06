@@ -1,14 +1,20 @@
 byteorder() = ifelse(Base.ENDIAN_BOM == 0x04030201, <, >)
 
-function wrapstream(io::IO)
+function smartopen(f::Function, args...; kwargs...)
+    io = open(args...; kwargs...)
     magic = read(io, 3)
     seek(io, 0)
-    newio = if magic == GZ_MAGIC
-        GzipDecompressorStream(io)
+    if magic == GZ_MAGIC
+        newio = GzipDecompressorStream(io)
+        ret = f(newio)
+        close(newio)
     elseif magic == BZ2_MAGIC
         Bzip2DecompressorStream(io)
+        ret = f(newio)
+        close(newio)
     else
-        io
+        ret = f(io)
     end
-    return newio
+    close(io)
+    return ret
 end
