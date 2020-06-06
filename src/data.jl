@@ -13,9 +13,6 @@ function MRCData(header, extendedheader = MRCExtendedHeader())
     dims = ndims(header)
     s = ntuple(i -> data_size[i], dims)
     data = Array{dtype,dims}(undef, s)
-    if dtype === UInt16 # make array actually usable by appearing signed
-        data = reinterpret(Int16, data)
-    end
     return MRCData(header, extendedheader, data)
 end
 
