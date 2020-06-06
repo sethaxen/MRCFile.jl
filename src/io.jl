@@ -4,7 +4,7 @@ function read_header!(io::IO, ::Type{T}) where {T<:MRCHeader}
     offsets = fieldoffsets(T)
     bytes = read!(io, Array{UInt8}(undef, HEADER_LENGTH))
     bytes_ptr = pointer(bytes)
-    vals = [
+    vals = GC.@preserve bytes [
         convertfield(names[i], types[i], bytes_ptr + offsets[i]) for i in 1:length(offsets)
     ]
     header = T(vals...)
