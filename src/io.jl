@@ -13,6 +13,7 @@ end
 
 function _read!(io::IO, ::Type{T}, h::MRCHeader) where {T<:MRCExtendedHeader}
     exthead_length = h.nsymbt
+    # TODO: use h.exttyp to identify extended header format and parse into a human-readable type
     data = read!(io, Array{UInt8}(undef, exthead_length))
     return T(data)
 end
