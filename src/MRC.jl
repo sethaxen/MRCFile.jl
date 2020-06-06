@@ -16,6 +16,7 @@ export cellangles,
     origin!,
     start,
     start!,
+    updateheader!,
     voxelaxes,
     voxelsize,
     voxelsize!

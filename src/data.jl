@@ -28,6 +28,47 @@ header(d::MRCData) = d.header
 
 extendedheader(d::MRCData) = d.extendedheader
 
+"""
+    updateheader!(data::MRCData; statistics = true)
+
+Update the header stored in `data` from the data and its extended header.
+Set `statistics=false` to avoid computing summary statistics from the data.
+"""
+function updateheader!(d::MRCData; statistics = true)
+    h = header(d)
+
+    # update size
+    s = size(d)
+    for i in eachindex(s)
+        setproperty!(h, (:nx, :ny, :nz)[i], s[i])
+    end
+
+    # update space group
+    if length(s) == 2
+        h.nz = 1
+        h.mz = 1
+        if  h.ispg < 0 || h.ispg > 230
+            h.ispg = 0
+        end
+    elseif length(s) == 3 && h.ispg == 0
+        h.ispg == 1
+    end
+
+    # misc
+    h.mode = TYPE_TO_MODE[eltype(d)]
+    h.nsymbt = bytesize(extendedheader(d))
+    h.nlabl = sum(s -> length(rstrip(s)) > 0, h.label)
+
+    # update statistics
+    if statistics
+        h.dmin, h.dmax = extrema(d)
+        dmean = mean(d)
+        h.dmean, h.rms = dmean, stdm(d, dmean; corrected = false)
+    end
+
+    return h
+end
+
 # Array overloads
 @inline Base.parent(d::MRCData) = d.data
 
