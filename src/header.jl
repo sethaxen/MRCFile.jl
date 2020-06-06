@@ -106,19 +106,70 @@ end
 
 cellangles(h::MRCHeader) = (h.cellb_alpha, h.cellb_beta, h.cellb_gamma)
 
+function cellangles!(h::MRCHeader, cellb)
+    h.cellb_alpha = cellb[1]
+    h.cellb_beta = cellb[2]
+    h.cellb_gamma = cellb[3]
+    return cellb
+end
+cellangles!(h::MRCHeader, cellb::Number) = cellangles!(h, ntuple(_ -> cellb, Val(3)))
+
 cellsize(h::MRCHeader) = (h.cella_x, h.cella_y, h.cella_z)
+
+function cellsize!(h::MRCHeader, cella)
+    h.cella_x = cella[1]
+    h.cella_y = cella[2]
+    h.cella_z = cella[3]
+    return cella
+end
+cellsize!(h::MRCHeader, cella::Number) = cellsize!(h, ntuple(_ -> cella, Val(3)))
 
 gridsize(h::MRCHeader) = (h.mx, h.my, h.mz)
 
+function gridsize!(h::MRCHeader, m)
+    h.mx = m[1]
+    h.my = m[2]
+    h.mz = m[3]
+    return m
+end
+gridsize!(h::MRCHeader, m::Number) = gridsize!(h, ntuple(_ -> m, Val(3)))
+
 origin(h::MRCHeader) = (h.origin_x, h.origin_y, h.origin_z)
 
+function origin!(h::MRCHeader, origin)
+    h.origin_x = origin[1]
+    h.origin_y = origin[2]
+    h.origin_z = origin[3]
+    return origin
+end
+origin!(h::MRCHeader, origin::Number) = origin!(h, ntuple(_ -> origin, Val(3)))
+
 start(h::MRCHeader) = (h.nxstart, h.nystart, h.nzstart)
+
+function start!(h::MRCHeader, nstart)
+    h.nxstart = nstart[1]
+    h.nystart = nstart[2]
+    h.nzstart = nstart[3]
+    return nstart
+end
+start!(h::MRCHeader, nstart::Number) = start!(h, ntuple(_ -> nstart, Val(3)))
 
 voxelaxes(h::MRCHeader, i) = StepRangeLen(start(h)[i], voxelsize(h)[i], size(h)[i])
 voxelaxes(h::MRCHeader) = ntuple(i -> voxelaxes(h, i), Val(3))
 
 voxelsize(h::MRCHeader, i) = cellsize(h)[i] / gridsize(h)[i]
 voxelsize(h::MRCHeader) = ntuple(i -> voxelsize(h, i), Val(3))
+
+function voxelsize!(h::MRCHeader, s, i)
+    setproperty!(h, (:cella_x, :cella_y, :cella_z)[i], s * getfield(h, (:mx, :my, :mz)[i]))
+    return s
+end
+function voxelsize!(h::MRCHeader, s)
+    voxelsize!(h, s[1], 1)
+    voxelsize!(h, s[2], 2)
+    voxelsize!(h, s[3], 3)
+    return s
+end
 
 Base.minimum(h::MRCHeader) = h.dmin
 

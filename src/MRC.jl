@@ -5,17 +5,23 @@ using CodecZlib, CodecBzip2
 
 export MRCHeader, MRCExtendedHeader, MRCData
 export cellangles,
+    cellangles!,
     cellsize,
+    cellsize!,
     data,
     extendedheader,
     extendedheader!,
     gridsize,
+    gridsize!,
     header,
     header!,
     origin,
+    origin!,
     start,
+    start!,
     voxelaxes,
-    voxelsize
+    voxelsize,
+    voxelsize!
 
 const GZ_MAGIC = UInt8[0x1f, 0x8b, 0x08]
 const BZ2_MAGIC = UInt8[0x42, 0x5A, 0x68]

@@ -25,30 +25,24 @@ extendedheader(d::MRCData) = d.extendedheader
 extendedheader!(d::MRCData, data) = extendedheader(d).data = data
 extendedheader!(d::MRCData, eh::MRCExtendedHeader) = extendedheader!(d, eh.data)
 
-firsttwo(t::Tuple) = ntuple(i -> t[i], 2)
+@inline firsttwo(t) = (t[1], t[2])
 
-cellangles(d::MRCData) = cellangles(header(d))
-cellangles(d::MRCData{<:Any,2}) = firsttwo(cellangles(header(d)))
+for f in (:cellangles, :cellsize, :gridsize, :origin, :start, :voxelsize)
+    f! = Symbol(f, !)
+    @eval begin
+        $(f)(d::MRCData) = $(f)(header(d))
+        $(f)(d::MRCData{<:Any,2}) = firsttwo($(f)(header(d)))
 
-cellsize(d::MRCData) = cellsize(header(d))
-cellsize(d::MRCData{<:Any,2}) = firsttwo(cellsize(header(d)))
-
-gridsize(d::MRCData) = gridsize(header(d))
-gridsize(d::MRCData{<:Any,2}) = firsttwo(gridsize(header(d)))
-
-origin(d::MRCData) = origin(header(d))
-origin(d::MRCData{<:Any,2}) = firsttwo(origin(header(d)))
-
-start(d::MRCData) = start(header(d))
-start(d::MRCData{<:Any,2}) = firsttwo(start(header(d)))
+        $(f!)(d::MRCData, v) = $(f!)(header(d), v)
+        $(f!)(d::MRCData{<:Any,2}, v::Number) = firsttwo($(f!)(header(d)), (v, v, zero(v)))
+    end
+end
 
 voxelaxes(d::MRCData, i) = voxelaxes(header(d), i)
-voxelaxes(d::MRCData) = voxelaxes(header(d))
-voxelaxes(d::MRCData{<:Any,2}) = firsttwo(voxelaxes(header(d)))
 
 voxelsize(d::MRCData, i) = voxelsize(header(d), i)
-voxelsize(d::MRCData) = voxelsize(header(d))
-voxelsize(d::MRCData{<:Any,2}) = firsttwo(voxelsize(header(d)))
+
+voxelsize!(d::MRCData, s, i) = voxelsize!(header(d), s, i)
 
 # Array overloads
 @inline Base.parent(d::MRCData) = d.data
