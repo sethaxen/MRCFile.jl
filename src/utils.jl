@@ -2,7 +2,7 @@ byteorder() = ifelse(Base.ENDIAN_BOM == 0x04030201, <, >)
 
 function smartopen(f::Function, args...; kwargs...)
     io = open(args...; kwargs...)
-    magic = read(io, 3)
+    magic = Tuple(read(io, 3))
     seek(io, 0)
     if magic == GZ_MAGIC
         newio = GzipDecompressorStream(io)

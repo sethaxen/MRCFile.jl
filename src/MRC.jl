@@ -21,8 +21,8 @@ export cellangles,
     voxelsize,
     voxelsize!
 
-const GZ_MAGIC = UInt8[0x1f, 0x8b, 0x08]
-const BZ2_MAGIC = UInt8[0x42, 0x5A, 0x68]
+const GZ_MAGIC = (0x1f, 0x8b, 0x08)
+const BZ2_MAGIC = (0x42, 0x5A, 0x68)
 const HEADER_LENGTH = 1024
 const MODE_TO_TYPE = Dict(
     Int32(0) => Int8,
