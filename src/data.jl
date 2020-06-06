@@ -6,7 +6,7 @@ end
 function MRCData(header, extendedheader, data::AbstractArray{T,N}) where {T,N}
     return MRCData{T,N,typeof(extendedheader),typeof(data)}(header, extendedheader, data)
 end
-function MRCData(header, extendedheader = MRCExtendedHeader())
+function MRCData(header = MRCHeader(), extendedheader = MRCExtendedHeader())
     data_size = size(header)
     data_length = prod(data_size)
     dtype = datatype(header)
@@ -15,6 +15,14 @@ function MRCData(header, extendedheader = MRCExtendedHeader())
     data = Array{dtype,dims}(undef, s)
     return MRCData(header, extendedheader, data)
 end
+function MRCData(size::NTuple{3,<:Integer})
+    header = MRCHeader()
+    for i in 1:3
+        setproperty!(header, (:nx, :ny, :nz)[i], size[i])
+    end
+    return MRCData(header)
+end
+MRCData(size::Integer...) = MRCData(size)
 
 header(d::MRCData) = d.header
 
