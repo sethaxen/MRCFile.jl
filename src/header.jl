@@ -263,7 +263,7 @@ start!(h::MRCHeader, nstart::Number) = start!(h, ntuple(_ -> nstart, Val(3)))
 
 Get range of voxel positions along axis `i` or all axes.
 """
-voxelaxes(h::MRCHeader, i) = StepRangeLen(start(h)[i], voxelsize(h)[i], size(h)[i])
+voxelaxes(h::MRCHeader, i) = StepRangeLen(origin(h)[i], voxelsize(h)[i], size(h)[i])
 voxelaxes(h::MRCHeader) = ntuple(i -> voxelaxes(h, i), Val(3))
 
 """
