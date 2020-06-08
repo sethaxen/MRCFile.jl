@@ -49,6 +49,14 @@ function Base.read(
     return T(data)
 end
 
+function Base.write(
+    fn::AbstractString,
+    ::Type{T};
+    kwargs...,
+) where {T<:Union{MRCData,MRCHeader,MRCExtendedHeader}}
+    return smartopen(io -> write(io, T; kwargs...), fn; write = true)
+end
+
 function Base.write(io::IO, header::MRCHeader; kwargs...)
     names = fieldnames(typeof(header))
     bytes = UInt8[]
