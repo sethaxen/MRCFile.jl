@@ -3,7 +3,7 @@ function Base.read(
     ::Type{T};
     kwargs...,
 ) where {T<:Union{MRCData,MRCHeader,MRCExtendedHeader}}
-    return smartopen(io -> read(io, T; kwargs...), fn, "r")
+    return smartopen(io -> read(io, T; kwargs...), fn; read = true)
 end
 
 """
