@@ -1,8 +1,9 @@
 function Base.read(
     fn::AbstractString,
-    ::Type{T},
+    ::Type{T};
+    kwargs...,
 ) where {T<:Union{MRCData,MRCHeader,MRCExtendedHeader}}
-    return smartopen(io -> read(io, T), fn, "r")
+    return smartopen(io -> read(io, T; kwargs...), fn, "r")
 end
 
 """
