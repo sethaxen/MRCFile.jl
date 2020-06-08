@@ -105,7 +105,7 @@ function sizeoffield(name, type)
     return sizeof(type)
 end
 
-function convertfield(name, type, pointer)
+function bytestoentry(name, type, pointer)
     # TODO: strip 0 bytes from ends of strings
     name === :exttyp && return unsafe_string(convert(Ptr{UInt8}, pointer), 4)
     name === :map && return unsafe_string(convert(Ptr{UInt8}, pointer), 4)

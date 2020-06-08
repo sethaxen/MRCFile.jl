@@ -29,7 +29,7 @@ function Base.read(io::IO, ::Type{T}) where {T<:MRCHeader}
     bytes = read!(io, Array{UInt8}(undef, HEADER_LENGTH))
     bytes_ptr = pointer(bytes)
     vals = GC.@preserve bytes [
-        convertfield(names[i], types[i], bytes_ptr + offsets[i]) for i in 1:length(offsets)
+        bytestoentry(names[i], types[i], bytes_ptr + offsets[i]) for i in 1:length(offsets)
     ]
     header = T(vals...)
     return header
