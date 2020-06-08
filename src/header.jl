@@ -115,6 +115,15 @@ function bytestoentry(name, type, pointer)
     return unsafe_load(convert(Ptr{type}, pointer))
 end
 
+function entrytobytes(name, value)
+    name === :exttyp && return padtruncto!(Vector{UInt8}(value), 4)
+    name === :map && return padtruncto!(Vector{UInt8}(value), 4)
+    name === :label && return vcat(ntuple(Val(10)) do i
+        return padtruncto!(Vector{UInt8}(value[i]), 80)
+    end...)
+    return reinterpret(UInt8, [value])
+end
+
 swapbytes(val) = val
 swapbytes(val::Number) = bswap(val)
 swapbytes(val::NTuple{N,Number}) where {N} = map(bswap, val)

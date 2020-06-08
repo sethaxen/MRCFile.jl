@@ -48,3 +48,12 @@ function Base.read(
     data = read!(io, Array{UInt8}(undef, length))
     return T(data)
 end
+
+function Base.write(io::IO, header::MRCHeader; kwargs...)
+    names = fieldnames(typeof(header))
+    bytes = UInt8[]
+    for name in names
+        append!(bytes, entrytobytes(name, getfield(header, name)))
+    end
+    return write(io, bytes)
+end
