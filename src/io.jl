@@ -65,3 +65,12 @@ function Base.write(io::IO, header::MRCHeader; kwargs...)
     end
     return write(io, bytes)
 end
+
+Base.write(io::IO, eh::MRCExtendedHeader) = write(io, eh.data)
+
+function Base.write(io::IO, d::MRCData)
+    sz = write(io, header(d))
+    sz += write(io, extendedheader(d))
+    sz += write(io, parent(d))
+    return sz
+end
