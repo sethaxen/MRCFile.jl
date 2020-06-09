@@ -125,6 +125,10 @@ function Base.similar(d::MRCData)
     return typeof(d)(header(d), extendedheader(d), similar(parent(d)))
 end
 
+function Base.IndexStyle(::Type{A}) where {T,N,EH,D,A<:MRCData{T,N,EH,D}}
+    return Base.IndexStyle(D)
+end
+
 """
     eachmaprow(d::MRCData)
 
