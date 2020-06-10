@@ -3,7 +3,11 @@ function Base.read(
     ::Type{T};
     kwargs...,
 ) where {T<:Union{MRCData,MRCHeader,MRCExtendedHeader}}
-    return smartopen(io -> read(io, T; kwargs...), fn; read = true)
+    return open(fn; read = true) do io
+        type = checkmagic(io)
+        newio = decompresstream(io, type)
+        return read(newio, T; kwargs...)
+    end
 end
 
 """
@@ -51,10 +55,14 @@ end
 
 function Base.write(
     fn::AbstractString,
-    ::Type{T};
+    object::T;
     kwargs...,
 ) where {T<:Union{MRCData,MRCHeader,MRCExtendedHeader}}
-    return smartopen(io -> write(io, T; kwargs...), fn; write = true)
+    type = checkextension(fn)
+    return open(fn; write = true) do io
+        newio = compresstream(io, type)
+        return write(newio, object; kwargs...)
+    end
 end
 
 function Base.write(io::IO, header::MRCHeader; kwargs...)

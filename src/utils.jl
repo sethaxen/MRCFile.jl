@@ -60,28 +60,3 @@ function decompresstream(io, type)
         throw(IOError("Unrecognized decompression type"))
     end
 end
-
-"""
-    smartopen(f::Function, args...; kwargs...)
-
-Open a file and call `f` on the io stream, decompressing if the file appears to be gz or bz2.
-"""
-function smartopen(f::Function, args...; read = false, write = false, kwargs...)
-    if read
-        io = open(args...; read = read, write = write)
-        type = checkmagic(io)
-        newio = decompresstream(io, type)
-        ret = f(newio)
-        close(io)
-    elseif args[1] isa AbstractString && write
-        path = args[1]
-        type = checkextension(path)
-        io = open(args...; read = read, write = write)
-        newio = compresstream(io, type)
-        ret = f(newio)
-        close(io)
-    else
-        ret = open(f, args...; read = read, write = write)
-    end
-    return ret
-end
