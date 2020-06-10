@@ -16,12 +16,14 @@ function padtruncto!(x, n; value = zero(eltype(x)))
 end
 
 function checkmagic(io)
-    magic = Base.read(io, 3)
+    magic = Base.read(io, 6)
     seek(io, 0)
-    return if magic == GZ_MAGIC
+    return if magic[1:3] == GZ_MAGIC
         :gz
-    elseif magic == BZ2_MAGIC
+    elseif magic[1:3] == BZ2_MAGIC
         :bz2
+    elseif magic == XZ_MAGIC
+        :xz
     else
         :none
     end
@@ -32,6 +34,8 @@ function checkextension(path)
         :gz
     elseif endswith(path, ".bz2")
         :bz2
+    elseif endswith(path, ".xz")
+        :xz
     else
         :none
     end
@@ -42,6 +46,8 @@ function compresstream(io, type)
         GzipCompressorStream(io)
     elseif type == :bz2
         Bzip2CompressorStream(io)
+    elseif type == :xz
+        XzCompressorStream(io)
     elseif type == :none
         io
     else
@@ -54,6 +60,8 @@ function decompresstream(io, type)
         GzipDecompressorStream(io)
     elseif type == :bz2
         Bzip2DecompressorStream(io)
+    elseif type == :xz
+        XzDecompressorStream(io)
     elseif type == :none
         io
     else

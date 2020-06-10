@@ -1,6 +1,6 @@
 module MRC
 
-using Dates, Statistics, CodecZlib, CodecBzip2
+using Dates, Statistics, CodecZlib, CodecBzip2, CodecXz
 
 export MRCHeader, MRCExtendedHeader, MRCData
 export cellangles,
@@ -27,6 +27,7 @@ export cellangles,
 
 const GZ_MAGIC = b"\x1f\x8b\b"
 const BZ2_MAGIC = b"BZh"
+const XZ_MAGIC = b"\xfd7zXZ\0"
 const MACHINE_STAMP_LITTLE = b"DD\0\0"
 const MACHINE_STAMP_BIG = b"\x11\x11\0\0"
 const HEADER_LENGTH = 1024
