@@ -25,10 +25,10 @@ export cellangles,
     voxelsize,
     voxelsize!
 
-const GZ_MAGIC = (0x1f, 0x8b, 0x08)
-const BZ2_MAGIC = (0x42, 0x5A, 0x68)
-const MACHINE_STAMP_LITTLE = (0x44, 0x44, 0x00, 0x00)
-const MACHINE_STAMP_BIG = (0x11, 0x11, 0x00, 0x00)
+const GZ_MAGIC = b"\x1f\x8b\b"
+const BZ2_MAGIC = b"BZh"
+const MACHINE_STAMP_LITTLE = b"DD\0\0"
+const MACHINE_STAMP_BIG = b"\x11\x11\0\0"
 const HEADER_LENGTH = 1024
 const MAP_NAME = "MAP "
 const MODE_TO_TYPE = Dict(

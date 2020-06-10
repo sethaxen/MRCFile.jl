@@ -23,7 +23,7 @@ Open a file and call `f` on the io stream, decompressing if the file appears to 
 function smartopen(f::Function, args...; read = false, write = false, kwargs...)
     return if read
         io = open(args...; read = read, write = write)
-        magic = Tuple(Base.read(io, 3))
+        magic = Base.read(io, 3)
         seek(io, 0)
         if magic == GZ_MAGIC
             newio = GzipDecompressorStream(io)
