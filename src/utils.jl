@@ -18,28 +18,10 @@ end
 function checkmagic(io)
     magic = Base.read(io, 6)
     seek(io, 0)
-    return if magic[1:3] == GZ_MAGIC
-        :gz
-    elseif magic[1:3] == BZ2_MAGIC
-        :bz2
-    elseif magic == XZ_MAGIC
-        :xz
-    else
-        :none
-    end
+    return get(TYPE_FROM_MAGIC, magic[1:3], get(TYPE_FROM_MAGIC, magic, :none))
 end
 
-function checkextension(path)
-    return if endswith(path, ".gz")
-        :gz
-    elseif endswith(path, ".bz2")
-        :bz2
-    elseif endswith(path, ".xz")
-        :xz
-    else
-        :none
-    end
-end
+checkextension(path) = get(TYPE_FROM_EXTENSION, path, :none)
 
 function compresstream(io, type)
     return if type == :gz

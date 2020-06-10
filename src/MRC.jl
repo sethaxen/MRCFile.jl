@@ -25,9 +25,8 @@ export cellangles,
     voxelsize,
     voxelsize!
 
-const GZ_MAGIC = b"\x1f\x8b\b"
-const BZ2_MAGIC = b"BZh"
-const XZ_MAGIC = b"\xfd7zXZ\0"
+const TYPE_FROM_MAGIC = Dict(b"\x1f\x8b\b" => :gz, b"BZh" => :bz2, b"\xfd7zXZ\0" => :xz)
+const TYPE_FROM_EXTENSION = Dict(".gz" => :gz, ".bz2" => :bz2, ".xz" => :xz)
 const MACHINE_STAMP_LITTLE = b"DD\0\0"
 const MACHINE_STAMP_BIG = b"\x11\x11\0\0"
 const HEADER_LENGTH = 1024
