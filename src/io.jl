@@ -79,6 +79,11 @@ Base.write(io::IO, eh::MRCExtendedHeader) = write(io, eh.data)
 function Base.write(io::IO, d::MRCData)
     sz = write(io, header(d))
     sz += write(io, extendedheader(d))
-    sz += write(io, parent(d))
+    T = datatype(header(d))
+    data = parent(d)
+    if T !== eltype(data)
+        data = T.(data)
+    end
+    sz += write(io, data)
     return sz
 end
