@@ -13,3 +13,37 @@
 [![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://sethaxen.github.io/MRC.jl/stable)
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)](https://sethaxen.github.io/MRC.jl/dev)
 -->
+
+## Installation
+
+```julia
+using Pkg
+Pkg.add("https://github.com/sethaxen/MRC.jl")
+```
+
+## Example
+
+This example downloads a map of [TRPV1](https://www.emdataresource.org/EMD-5778) and animates slices taken through the map.
+
+To set-up this example, install FTPClient and Plots with
+
+```julia
+using Pkg
+Pkg.add("FTPClient")
+Pkg.add("Plots")
+```
+
+```julia
+using MRC, FTPClient, Plots
+
+emdid = 5778 # TRPV1
+ftp = FTP(hostname="ftp.rcsb.org/pub/emdb/structures/EMD-$(emdid)/map")
+dmap = read(download(ftp, "emd_$(emdid).map.gz"), MRCData)
+close(ftp)
+
+anim = @animate for xsection in eachmapcol(dmap)
+    plot(xsection)
+end
+
+gif(anim, "emd-$(emdid)_slices.gif", fps = 15)
+```
