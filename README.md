@@ -40,10 +40,14 @@ emdid = 5778 # TRPV1
 ftp = FTP(hostname="ftp.rcsb.org/pub/emdb/structures/EMD-$(emdid)/map")
 dmap = read(download(ftp, "emd_$(emdid).map.gz"), MRCData)
 close(ftp)
+dmin, dmax = extrema(header(dmap))
+drange = dmax - dmin
 
-anim = @animate for xsection in eachmapcol(dmap)
-    plot(xsection)
+anim = @animate for xsection in eachmapsection(dmap)
+    plot(RGB.((xsection .- dmin) ./ drange))
 end
 
-gif(anim, "emd-$(emdid)_slices.gif", fps = 15)
+gif(anim, "emd-$(emdid)_slices.gif", fps = 30)
 ```
+
+![EMD-5778 slices](https://github.com/sethaxen/MRC.jl/blob/master/docs/src/assets/emd-5778_slices.gif)
