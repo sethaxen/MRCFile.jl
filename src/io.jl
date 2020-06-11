@@ -1,28 +1,31 @@
-function Base.read(
-    fn::AbstractString,
-    ::Type{T};
-    kwargs...,
-) where {T<:Union{MRCData,MRCHeader,MRCExtendedHeader}}
+function Base.read(fn::AbstractString, ::Type{T}; kwargs...) where {T<:MRCData}
     return open(fn; read = true) do io
-        type = checkmagic(io)
-        newio = decompresstream(io, type)
-        return read(newio, T; kwargs...)
+        return read(io, T; kwargs...)
     end
 end
 
 """
-    read(io::IO, ::Type{T}) where {T<:MRCData}
-    read(fn::AbstractString, ::Type{T}) where {T<:MRCData}
+    read(io::IO, ::Type{T}; compress = :auto) where {T<:MRCData}
+    read(fn::AbstractString, ::Type{T}; compress = :auto) where {T<:MRCData}
 
 Read an instance of [`MRCData`](@ref) from an io stream or closed file.
-If a filename is passed, the file is checked for gz or bz2 compression.
+Use `compress` to specify the decompression with the following options:
+- `:auto`: Infer one of the below compression types from the file
+- `:gz`: GZ
+- `:bz2`: BZ2
+- `:xz`: XZ
+- `:none`: no compression
 """
 read(::Any, ::Type{<:MRCData})
-function Base.read(io::IO, ::Type{T}) where {T<:MRCData}
-    header = read(io, MRCHeader)
-    extendedheader = read(io, MRCExtendedHeader; header = header)
+function Base.read(io::IO, ::Type{T}; compress = :auto) where {T<:MRCData}
+    if compress == :auto
+        compress = checkmagic(io)
+    end
+    newio = decompresstream(io, compress)
+    header = read(newio, MRCHeader)
+    extendedheader = read(newio, MRCExtendedHeader; header = header)
     d = MRCData(header, extendedheader)
-    read!(io, d.data)
+    read!(newio, d.data)
     return d
 end
 
@@ -53,19 +56,16 @@ function Base.read(
     return T(data)
 end
 
-function Base.write(
-    fn::AbstractString,
-    object::T;
-    kwargs...,
-) where {T<:Union{MRCData,MRCHeader,MRCExtendedHeader}}
-    type = checkextension(fn)
+function Base.write(fn::AbstractString, object::T; compress = :auto) where {T<:Union{MRCData}}
+    if compress == :auto
+        compress = checkextension(fn)
+    end
     return open(fn; write = true) do io
-        newio = compresstream(io, type)
-        return write(newio, object; kwargs...)
+        return write(io, object; compress = compress)
     end
 end
 
-function Base.write(io::IO, header::MRCHeader; kwargs...)
+function Base.write(io::IO, header::MRCHeader)
     names = fieldnames(typeof(header))
     bytes = UInt8[]
     for name in names
@@ -76,14 +76,15 @@ end
 
 Base.write(io::IO, eh::MRCExtendedHeader) = write(io, eh.data)
 
-function Base.write(io::IO, d::MRCData)
-    sz = write(io, header(d))
-    sz += write(io, extendedheader(d))
+function Base.write(io::IO, d::MRCData; compress = :none)
+    newio = compresstream(io, compress)
+    sz = write(newio, header(d))
+    sz += write(newio, extendedheader(d))
     T = datatype(header(d))
     data = parent(d)
     if T !== eltype(data)
         data = T.(data)
     end
-    sz += write(io, data)
+    sz += write(newio, data)
     return sz
 end
