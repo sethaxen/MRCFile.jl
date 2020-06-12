@@ -270,7 +270,7 @@ voxelaxes(h::MRCHeader) = ntuple(i -> voxelaxes(h, i), Val(3))
     voxelsize(h::MRCHeader, i)
     voxelsize(h::MRCHeader)
 
-Get size of dimension i of voxel in angstroms.
+Get size of dimension `i` of voxel in angstroms.
 """
 voxelsize(h::MRCHeader, i) = cellsize(h)[i] / gridsize(h)[i]
 voxelsize(h::MRCHeader) = ntuple(i -> voxelsize(h, i), Val(3))
@@ -279,7 +279,7 @@ voxelsize(h::MRCHeader) = ntuple(i -> voxelsize(h, i), Val(3))
     voxelsize!(h::MRCHeader, s, i)
     voxelsize!(h::MRCHeaders, (x, y, z))
 
-Set size of dimension i of voxel in angstroms.
+Set size of dimension `i` of voxel in angstroms.
 """
 function voxelsize!(h::MRCHeader, s, i)
     setproperty!(h, (:cella_x, :cella_y, :cella_z)[i], s * getfield(h, (:mx, :my, :mz)[i]))

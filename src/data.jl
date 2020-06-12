@@ -6,7 +6,7 @@ Container for electron density data loaded from an MRC file.
 Each instance of `MRCData` carries with it a header and extended header, respectively
 accessed with [`header`](@ref) and [`extendedheader`](@ref).
 
-If changes are made to the header, extended header, or the data, call [`updateheader!`]
+If changes are made to the header, extended header, or the data, call [`updateheader!`](@ref)
 before writing to file to ensure the header is stil consistent with the data.
 
     MRCData()
@@ -139,7 +139,7 @@ eachmaprow(d::MRCData) = eachslice(d; dims = header(d).mapr)
 """
     eachmapcol(d::MRCData)
 
-Return an iterator map columns.
+Return an iterator over columns.
 """
 eachmapcol(d::MRCData) = eachslice(d; dims = header(d).mapc)
 
