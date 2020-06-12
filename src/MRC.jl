@@ -25,8 +25,29 @@ export cellangles,
     voxelsize,
     voxelsize!
 
-const TYPE_FROM_MAGIC = Dict(b"\x1f\x8b\b" => :gz, b"BZh" => :bz2, b"\xfd7zXZ\0" => :xz)
-const TYPE_FROM_EXTENSION = Dict(".gz" => :gz, ".bz2" => :bz2, ".xz" => :xz)
+const COMPRESSIONS = (
+    gz = (
+        magic = b"\x1f\x8b\b",
+        extension = ".gz",
+        compressor = GzipCompressorStream,
+        decompressor = GzipDecompressorStream,
+    ),
+    bz2 = (
+        magic = b"BZh",
+        extension = ".bz2",
+        compressor = Bzip2CompressorStream,
+        decompressor = Bzip2DecompressorStream,
+    ),
+    xz = (
+        magic = b"\xfd7zXZ\0",
+        extension = ".xz",
+        compressor = XzCompressorStream,
+        decompressor = XzDecompressorStream,
+    ),
+)
+const COMPRESSOR_MAGICS = Dict(spec.magic => type for (type, spec) in pairs(COMPRESSIONS))
+const COMPRESSOR_EXTENSIONS =
+    Dict(spec.extension => type for (type, spec) in pairs(COMPRESSIONS))
 const MACHINE_STAMP_LITTLE = b"DD\0\0"
 const MACHINE_STAMP_BIG = b"\x11\x11\0\0"
 const HEADER_LENGTH = 1024

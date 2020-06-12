@@ -18,35 +18,23 @@ end
 function checkmagic(io)
     magic = read(io, 6)
     seek(io, 0)
-    return get(TYPE_FROM_MAGIC, magic[1:3], get(TYPE_FROM_MAGIC, magic, :none))
+    return get(COMPRESSOR_MAGICS, magic[1:3], get(COMPRESSOR_MAGICS, magic, :none))
 end
 
-checkextension(path) = get(TYPE_FROM_EXTENSION, splitext(path)[end], :none)
+checkextension(path) = get(COMPRESSOR_EXTENSIONS, splitext(path)[end], :none)
 
-function compresstream(io, type)
-    return if type == :gz
-        GzipCompressorStream(io)
-    elseif type == :bz2
-        Bzip2CompressorStream(io)
-    elseif type == :xz
-        XzCompressorStream(io)
-    elseif type == :none
-        io
+function compressstream(io, type)
+    return if hasfield(COMPRESSIONS, type)
+        COMPRESSIONS[type].compressor(io)
     else
-        throw(IOError("Unrecognized compression type"))
+        io
     end
 end
 
-function decompresstream(io, type)
-    return if type == :gz
-        GzipDecompressorStream(io)
-    elseif type == :bz2
-        Bzip2DecompressorStream(io)
-    elseif type == :xz
-        XzDecompressorStream(io)
-    elseif type == :none
-        io
+function decompressstream(io, type)
+    return if hasfield(COMPRESSIONS, type)
+        COMPRESSIONS[type].decompressor(io)
     else
-        throw(IOError("Unrecognized decompression type"))
+        io
     end
 end

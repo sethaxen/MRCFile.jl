@@ -15,7 +15,7 @@ function Base.read(io::IO, ::Type{T}; compress = :auto) where {T<:MRCData}
     if compress == :auto
         compress = checkmagic(io)
     end
-    newio = decompresstream(io, compress)
+    newio = decompressstream(io, compress)
     header = read(newio, MRCHeader)
     extendedheader = read(newio, MRCExtendedHeader; header = header)
     d = MRCData(header, extendedheader)
@@ -69,7 +69,7 @@ Use `compress` to specify the compression with the following options:
 """
 write(::Any, ::MRCData)
 function Base.write(io::IO, d::MRCData; compress = :none)
-    newio = compresstream(io, compress)
+    newio = compressstream(io, compress)
     sz = write(newio, header(d))
     sz += write(newio, extendedheader(d))
     T = datatype(header(d))

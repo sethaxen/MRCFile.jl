@@ -11,7 +11,7 @@
 end
 
 @testset "checkmagic" begin
-    magic_type_pairs = merge(MRC.TYPE_FROM_MAGIC, Dict(b"\x04\x05\x06" => :none))
+    magic_type_pairs = merge(MRC.COMPRESSOR_MAGICS, Dict(b"\x04\x05\x06" => :none))
     @testset "$type" for (magic, type) in magic_type_pairs
         io = IOBuffer()
         write(io, magic)
@@ -24,7 +24,7 @@ end
 end
 
 @testset "checkextension" begin
-    ext_type_pairs = merge(MRC.TYPE_FROM_EXTENSION, Dict("" => :none))
+    ext_type_pairs = merge(MRC.COMPRESSOR_EXTENSIONS, Dict("" => :none))
     @testset "$type" for (ext, type) in ext_type_pairs
         fn = "map.mrc$(ext)"
         type2 = MRC.checkextension(fn)
