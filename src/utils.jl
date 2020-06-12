@@ -16,12 +16,12 @@ function padtruncto!(x, n; value = zero(eltype(x)))
 end
 
 function checkmagic(io)
-    magic = Base.read(io, 6)
+    magic = read(io, 6)
     seek(io, 0)
     return get(TYPE_FROM_MAGIC, magic[1:3], get(TYPE_FROM_MAGIC, magic, :none))
 end
 
-checkextension(path) = get(TYPE_FROM_EXTENSION, path, :none)
+checkextension(path) = get(TYPE_FROM_EXTENSION, splitext(path)[end], :none)
 
 function compresstream(io, type)
     return if type == :gz
