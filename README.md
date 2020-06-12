@@ -14,6 +14,12 @@
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)](https://sethaxen.github.io/MRC.jl/dev)
 -->
 
+MRC.jl implements the [MRC2014 format](https://www.ccpem.ac.uk/mrc_format/mrc2014.php) for storing image and volume data such as those produced by electron microscopy.
+It offers the ability to read, edit, and write MRC files, as well as utility functions for extracting useful information from the headers.
+
+The key type is `MRCData`, which contains the contents of the MRC file, accessible with `header` and `extendedheader`.
+`MRCData` is an `AbstractArray` whose elements are those of the data portion of the file and can be accessed or modified accordingly.
+
 ## Installation
 
 ```julia
@@ -40,10 +46,18 @@ emdid = 5778 # TRPV1
 ftp = FTP(hostname="ftp.rcsb.org/pub/emdb/structures/EMD-$(emdid)/map")
 dmap = read(download(ftp, "emd_$(emdid).map.gz"), MRCData)
 close(ftp)
+dmin, dmax = extrema(header(dmap))
+drange = dmax - dmin
 
-anim = @animate for xsection in eachmapcol(dmap)
-    plot(xsection)
+anim = @animate for xsection in eachmapsection(dmap)
+    plot(RGB.((xsection .- dmin) ./ drange))
 end
 
-gif(anim, "emd-$(emdid)_slices.gif", fps = 15)
+gif(anim, "emd-$(emdid)_slices.gif", fps = 30)
 ```
+
+![EMD-5778 slices](https://github.com/sethaxen/MRC.jl/blob/master/docs/src/assets/emd-5778_slices.gif)
+
+## Related packages
+
+[mrcfile](https://github.com/ccpem/mrcfile) is a full-featured Python implementation of of the MRC2014 format.
