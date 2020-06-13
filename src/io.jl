@@ -80,7 +80,11 @@ function Base.write(io::IO, d::MRCData; compress = :none)
     sz += write(newio, data)
     return sz
 end
-function Base.write(fn::AbstractString, object::T; compress = :auto) where {T<:Union{MRCData}}
+function Base.write(
+    fn::AbstractString,
+    object::T;
+    compress = :auto,
+) where {T<:Union{MRCData}}
     if compress == :auto
         compress = checkextension(fn)
     end

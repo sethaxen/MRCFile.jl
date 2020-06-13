@@ -81,7 +81,7 @@ function updateheader!(d::MRCData; statistics = true)
     if length(s) == 2
         h.nz = 1
         h.mz = 1
-        if  h.ispg < 0 || h.ispg > 230
+        if h.ispg < 0 || h.ispg > 230
             h.ispg = 0
         end
     elseif length(s) == 3 && h.ispg == 0
