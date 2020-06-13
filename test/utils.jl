@@ -10,25 +10,31 @@
     @test x == [1, 2, 3, 1, 1]
 end
 
-@testset "checkmagic" begin
-    magic_type_pairs = merge(MRC.COMPRESSOR_MAGICS, Dict(b"\x04\x05\x06" => :none))
-    @testset "$type" for (magic, type) in magic_type_pairs
+@testset "compression: $type" for type in keys(MRC.COMPRESSIONS)
+    spec = getproperty(MRC.COMPRESSIONS, type)
+    @testset "checkmagic" begin
         io = IOBuffer()
-        write(io, magic)
+        write(io, spec.magic)
         write(io, [0x01, 0x02, 0x03])
         seek(io, 0)
         type2 = MRC.checkmagic(io)
         @test type2 == type
         close(io)
     end
-end
 
-@testset "checkextension" begin
-    ext_type_pairs = merge(MRC.COMPRESSOR_EXTENSIONS, Dict("" => :none))
-    @testset "$type" for (ext, type) in ext_type_pairs
-        fn = "map.mrc$(ext)"
+    @testset "checkextension" begin
+        fn = "map.mrc$(spec.extension)"
         type2 = MRC.checkextension(fn)
         @test type2 == type
     end
-end
 
+    @testset "(de)compressstream" begin
+        buf = IOBuffer()
+        stream = MRC.compressstream(buf, type)
+        write(stream, b"foo", TranscodingStreams.TOKEN_END)
+        newbuf = IOBuffer(take!(buf))
+        @test MRC.checkmagic(newbuf) == type
+        newstream = MRC.decompressstream(newbuf, type)
+        @test read(newstream) == b"foo"
+    end
+end
