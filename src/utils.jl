@@ -24,17 +24,9 @@ end
 checkextension(path) = get(COMPRESSOR_EXTENSIONS, splitext(path)[end], :none)
 
 function compressstream(io, type)
-    return if hasfield(COMPRESSIONS, type)
-        COMPRESSIONS[type].compressor(io)
-    else
-        io
-    end
+    return get(COMPRESSIONS, type, (compressor = NoopStream,)).compressor(io)
 end
 
 function decompressstream(io, type)
-    return if hasfield(COMPRESSIONS, type)
-        COMPRESSIONS[type].decompressor(io)
-    else
-        io
-    end
+    return get(COMPRESSIONS, type, (decompressor = NoopStream,)).decompressor(io)
 end

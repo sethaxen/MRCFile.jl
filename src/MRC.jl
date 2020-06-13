@@ -1,6 +1,6 @@
 module MRC
 
-using Dates, Statistics, CodecZlib, CodecBzip2, CodecXz
+using Dates, Statistics, CodecZlib, CodecBzip2, CodecXz, TranscodingStreams
 
 export MRCHeader, MRCExtendedHeader, MRCData
 export cellangles,
@@ -43,6 +43,12 @@ const COMPRESSIONS = (
         extension = ".xz",
         compressor = XzCompressorStream,
         decompressor = XzDecompressorStream,
+    ),
+    none = (
+        magic = b"",
+        extension = "",
+        compressor = NoopStream,
+        decompressor = NoopStream,
     ),
 )
 const COMPRESSOR_MAGICS = Dict(spec.magic => type for (type, spec) in pairs(COMPRESSIONS))
