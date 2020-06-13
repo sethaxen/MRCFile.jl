@@ -54,7 +54,9 @@ const COMPRESSIONS = (
 const COMPRESSOR_MAGICS = Dict(spec.magic => type for (type, spec) in pairs(COMPRESSIONS))
 const COMPRESSOR_EXTENSIONS =
     Dict(spec.extension => type for (type, spec) in pairs(COMPRESSIONS))
+@enum ByteOrder LittleEndian BigEndian
 const MACHINE_STAMP_LITTLE = b"DD\0\0"
+const MACHINE_STAMP_LITTLE_ALT = b"DA\0\0"
 const MACHINE_STAMP_BIG = b"\x11\x11\0\0"
 const HEADER_LENGTH = 1024
 const MAP_NAME = "MAP "

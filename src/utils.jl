@@ -1,4 +1,35 @@
-byteorder() = ifelse(Base.ENDIAN_BOM == 0x04030201, <, >)
+"""
+    hostbyteorder() -> ByteOrder
+
+Get the byte order for this machine.
+"""
+hostbyteorder() = ifelse(Base.ENDIAN_BOM == 0x04030201, LittleEndian, BigEndian)
+
+"""
+    machstfrombyteorder(order = hostbyteorder()) -> Base.CodeUnits{UInt8,String}
+
+Get the default machine stamp for the passed byte order.
+"""
+function machstfrombyteorder(order::ByteOrder = hostbyteorder())
+    return ifelse(order == LittleEndian, MACHINE_STAMP_LITTLE, MACHINE_STAMP_BIG)
+end
+
+"""
+    byteorderfrommachst(machst) -> ByteOrder
+
+Get the byte order from machine stamp.
+"""
+function byteorderfrommachst(machst)
+    return if machst[1] == MACHINE_STAMP_LITTLE[1] && (
+        machst[2] == MACHINE_STAMP_LITTLE[2] || machst[2] == MACHINE_STAMP_LITTLE_ALT[2]
+    )
+        LittleEndian
+    elseif machst[1] == MACHINE_STAMP_BIG[1] && machst[2] == MACHINE_STAMP_BIG[2]
+        BigEndian
+    else
+        throw(DomainError("Unrecognized machine stamp $(machst)"))
+    end
+end
 
 """
     padtruncto!(x::AbstractVector, n; value = zero(eltype(x)))

@@ -1,3 +1,24 @@
+@testset "hostbyteorder" begin
+    if Base.ENDIAN_BOM == 0x04030201
+        @test MRC.hostbyteorder() == MRC.LittleEndian
+    else
+        @test MRC.hostbyteorder() == MRC.BigEndian
+    end
+end
+
+@testset "machstfrombyteorder" begin
+    @test MRC.machstfrombyteorder() == [0x44, 0x44, 0x00, 0x00]
+    @test MRC.machstfrombyteorder(MRC.LittleEndian) == [0x44, 0x44, 0x00, 0x00]
+    @test MRC.machstfrombyteorder(MRC.BigEndian) == [0x11, 0x11, 0x00, 0x00]
+end
+
+@testset "byteorderfrommachst" begin
+    @test MRC.byteorderfrommachst([0x44, 0x44, 0x00, 0x00]) == MRC.LittleEndian
+    @test MRC.byteorderfrommachst([0x44, 0x41, 0x00, 0x00]) == MRC.LittleEndian
+    @test MRC.byteorderfrommachst([0x11, 0x11, 0x00, 0x00]) == MRC.BigEndian
+    @test_throws DomainError MRC.byteorderfrommachst([0x00, 0x00, 0x00, 0x00])
+end
+
 @testset "padtruncto!" begin
     x = [1, 2, 3]
     MRC.padtruncto!(x, 4)
