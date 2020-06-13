@@ -272,7 +272,10 @@ voxelaxes(h::MRCHeader) = ntuple(i -> voxelaxes(h, i), Val(3))
 
 Get size of dimension `i` of voxel in angstroms.
 """
-voxelsize(h::MRCHeader, i) = cellsize(h)[i] / gridsize(h)[i]
+function voxelsize(h::MRCHeader, i)
+    cs = cellsize(h)[i]
+    return iszero(cs) ? cs : cs / gridsize(h)[i]
+end
 voxelsize(h::MRCHeader) = ntuple(i -> voxelsize(h, i), Val(3))
 
 """
