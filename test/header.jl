@@ -136,7 +136,7 @@ end
 end
 
 @testset "fieldoffsets" begin
-    @test MRC.fieldoffsets(fieldoffsets) == [
+    @test MRC.fieldoffsets(MRCHeader) == [
         0,
         4,
         8,
