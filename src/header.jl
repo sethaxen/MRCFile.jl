@@ -66,7 +66,7 @@ function MRCHeader(; kwargs...)
         ntuple(_ -> UInt8(0), Val(84)), # extra
         ntuple(_ -> 0, Val(3))..., # origin
         MAP_NAME, # map
-        MACHINE_STAMP_LITTLE, # machst, little endian
+        NTuple{4,UInt8}(machstfrombyteorder()), # machst
         -1, # rms < 0 means rms is undetermined
         1, # nlabl
         (
