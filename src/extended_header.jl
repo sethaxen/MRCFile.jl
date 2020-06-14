@@ -16,3 +16,5 @@ mutable struct MRCExtendedHeader{T}
     data::T
 end
 MRCExtendedHeader() = MRCExtendedHeader(UInt8[])
+
+Base.sizeof(eh::MRCExtendedHeader) = sizeof(eh.data)

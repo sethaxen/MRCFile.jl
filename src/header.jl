@@ -83,6 +83,8 @@ function MRCHeader(; kwargs...)
     return h
 end
 
+Base.sizeof(::Type{MRCHeader}) = 1024
+
 function Base.show(io::IO, ::MIME"text/plain", h::MRCHeader)
     print(io, "MRCHeader(")
     for f in fieldnames(typeof(h))
