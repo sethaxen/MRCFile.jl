@@ -7,6 +7,9 @@ An MRC header.
     MRCHeader(; kwargs...)
 
 Construct a header with suitable defaults, optionally substituting any provided entries.
+
+See the [MRC2014 format spec](https://www.ccpem.ac.uk/mrc_format/mrc2014.php) for a
+description of the header fields.
 """
 mutable struct MRCHeader
     nx::Int32
