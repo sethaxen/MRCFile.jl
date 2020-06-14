@@ -31,6 +31,21 @@ function byteorderfrommachst(machst)
     end
 end
 
+function bswaptoh(order::ByteOrder)
+    return ifelse(order == LittleEndian, maybeswap(ltoh), maybeswap(ntoh))
+end
+bswaptoh(machst) = bswaptoh(byteorderfrommachst(machst))
+
+function bswapfromh(order::ByteOrder)
+    return ifelse(order == LittleEndian, maybeswap(htol), maybeswap(hton))
+end
+bswapfromh(machst) = bswapfromh(byteorderfrommachst(machst))
+
+maybeswap(fswap, x) = x
+maybeswap(fswap, x::Number) = fswap(x)
+maybeswap(fswap, x::NTuple{N,Number}) where {N} = ntuple(i -> fswap(x[i]), Val{N}())
+maybeswap(fswap) = x -> maybeswap(fswap, x)
+
 """
     padtruncto!(x::AbstractVector, n; value = zero(eltype(x)))
 

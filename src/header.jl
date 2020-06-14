@@ -124,16 +124,6 @@ function entrytobytes(name, value)
     return reinterpret(UInt8, [value])
 end
 
-swapbytes(val) = val
-swapbytes(val::Number) = bswap(val)
-swapbytes(val::NTuple{N,Number}) where {N} = map(bswap, val)
-function swapbytes(h::MRCHeader)
-    vals = map(fieldnames(typeof(h))) do n
-        return swapbytes(getfield(h, n))
-    end
-    return typeof(h)(vals...)
-end
-
 @generated function fieldoffsets(::Type{T}) where {T}
     sizes = map(sizeoffield, fieldnames(T), T.types)
     offsets = cumsum(sizes)

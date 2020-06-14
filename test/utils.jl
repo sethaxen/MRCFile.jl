@@ -19,6 +19,30 @@ end
     @test_throws DomainError MRC.byteorderfrommachst([0x00, 0x00, 0x00, 0x00])
 end
 
+@testset "bswaptoh" begin
+    @test MRC.bswaptoh(MRC.LittleEndian) == maybeswap(ltoh)
+    @test MRC.bswaptoh(MRC.MACHINE_STAMP_LITTLE) == maybeswap(ltoh)
+    @test MRC.bswaptoh(MRC.MACHINE_STAMP_LITTLE_ALT) == maybeswap(ltoh)
+    @test MRC.bswaptoh(MRC.BigEndian) == maybeswap(ntoh)
+    @test MRC.bswaptoh(MRC.MACHINE_STAMP_BIG) == maybeswap(ntoh)
+end
+
+@testset "bswapfromh" begin
+    @test MRC.bswapfromh(MRC.LittleEndian) == maybeswap(htol)
+    @test MRC.bswapfromh(MRC.MACHINE_STAMP_LITTLE) == maybeswap(htol)
+    @test MRC.bswapfromh(MRC.MACHINE_STAMP_LITTLE_ALT) == maybeswap(htol)
+    @test MRC.bswapfromh(MRC.BigEndian) == maybeswap(hton)
+    @test MRC.bswapfromh(MRC.MACHINE_STAMP_BIG) == maybeswap(hton)
+end
+
+@testset "maybeswap" begin
+    @test MRC.maybeswap(bswap, Int32(5)) === bswap(Int32(5))
+    @test MRC.maybeswap(bswap, "foo") === "foo"
+    @test MRC.maybeswap(bswap, (Int32(5), Int32(6))) === (bswap(Int32(5)), bswap(Int32(6)))
+    @test MRC.maybeswap(bswap, (0x01, 0x02)) === (0x01, 0x02)
+    @test MRC.maybeswap(bswap)(Int32(5)) === bswap(Int32(5))
+end
+
 @testset "padtruncto!" begin
     x = [1, 2, 3]
     MRC.padtruncto!(x, 4)

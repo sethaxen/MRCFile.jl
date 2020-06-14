@@ -21,6 +21,7 @@ function Base.read(io::IO, ::Type{T}; compress = :auto) where {T<:MRCData}
     d = MRCData(header, extendedheader)
     read!(newio, d.data)
     close(newio)
+    map!(bswaptoh(header.machst), d.data, d.data)
     return d
 end
 function Base.read(fn::AbstractString, ::Type{T}; compress = :auto) where {T<:MRCData}
@@ -34,10 +35,12 @@ function Base.read(io::IO, ::Type{T}) where {T<:MRCHeader}
     types = T.types
     offsets = fieldoffsets(T)
     bytes = read!(io, Array{UInt8}(undef, HEADER_LENGTH))
+    machst = bytes[213:216] # look ahead to machst
     bytes_ptr = pointer(bytes)
     vals = GC.@preserve bytes [
         bytestoentry(names[i], types[i], bytes_ptr + offsets[i]) for i in 1:length(offsets)
     ]
+    map!(bswaptoh(machst), vals, vals)
     header = T(vals...)
     return header
 end
@@ -71,14 +74,15 @@ Use `compress` to specify the compression with the following options:
 write(::Any, ::MRCData)
 function Base.write(io::IO, d::MRCData; compress = :none)
     newio = compressstream(io, compress)
-    sz = write(newio, header(d))
+    h = header(d)
+    sz = write(newio, h)
     sz += write(newio, extendedheader(d))
-    T = datatype(header(d))
+    T = datatype(h)
     data = parent(d)
-    if T !== eltype(data)
-        data = T.(data)
+    fswap = bswapfromh(h.machst)
+    for i in eachindex(data)
+        @inbounds sz += write(newio, fswap(T(data[i])))
     end
-    sz += write(newio, data)
     close(newio)
     return sz
 end
@@ -98,8 +102,9 @@ end
 function Base.write(io::IO, header::MRCHeader)
     names = fieldnames(typeof(header))
     bytes = UInt8[]
+    fswap = bswapfromh(header.machst)
     for name in names
-        append!(bytes, entrytobytes(name, getfield(header, name)))
+        append!(bytes, entrytobytes(name, fswap(getfield(header, name))))
     end
     return write(io, bytes)
 end
