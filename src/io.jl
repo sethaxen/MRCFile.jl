@@ -20,6 +20,7 @@ function Base.read(io::IO, ::Type{T}; compress = :auto) where {T<:MRCData}
     extendedheader = read(newio, MRCExtendedHeader; header = header)
     d = MRCData(header, extendedheader)
     read!(newio, d.data)
+    close(newio)
     return d
 end
 function Base.read(fn::AbstractString, ::Type{T}; compress = :auto) where {T<:MRCData}
@@ -78,6 +79,7 @@ function Base.write(io::IO, d::MRCData; compress = :none)
         data = T.(data)
     end
     sz += write(newio, data)
+    close(newio)
     return sz
 end
 function Base.write(
