@@ -106,11 +106,10 @@ function sizeoffield(name, type)
 end
 
 function bytestoentry(name, type, pointer)
-    # TODO: strip 0 bytes from ends of strings
-    name === :exttyp && return unsafe_string(convert(Ptr{UInt8}, pointer), 4)
-    name === :map && return unsafe_string(convert(Ptr{UInt8}, pointer), 4)
+    name === :exttyp && return _strip_unsafe_string(pointer, 4)
+    name === :map && return _strip_unsafe_string(pointer, 4)
     name === :label && return ntuple(Val(10)) do i
-        return unsafe_string(convert(Ptr{UInt8}, pointer + (i - 1) * 80), 80)
+        return _strip_unsafe_string(pointer + (i - 1) * 80, 80)
     end
     return unsafe_load(convert(Ptr{type}, pointer))
 end

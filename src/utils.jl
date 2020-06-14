@@ -77,3 +77,7 @@ end
 function decompressstream(io, type)
     return get(COMPRESSIONS, type, (decompressor = NoopStream,)).decompressor(io)
 end
+
+function _strip_unsafe_string(pointer, size)
+    return rstrip(unsafe_string(convert(Ptr{UInt8}, pointer), size), ('\0', ' '))
+end
