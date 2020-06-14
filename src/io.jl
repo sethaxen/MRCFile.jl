@@ -60,6 +60,25 @@ function Base.read(
 end
 
 """
+    read_mmap(io::IO, ::Type{MRCData})
+    read_mmap(path::AbstractString, ::Type{MRCData})
+
+Read MRC file or stream, using a memory-mapped array to access the data.
+"""
+function read_mmap(io::IO, ::Type{MRCData})
+    head = read(io, MRCHeader)
+    exthead = read(io, MRCExtendedHeader; header = head)
+    arraytype = Array{MRC.datatype(head),ndims(head)}
+    data = Mmap.mmap(io, arraytype, size(head)[1:ndims(head)])
+    return MRCData(head, exthead, data)
+end
+function read_mmap(path::AbstractString, T::Type{MRCData})
+    return open(path, "r") do io
+        return read_mmap(io, T)
+    end
+end
+
+"""
     write(io::IO, ::MRCData; compress = :none)
     write(fn::AbstractString, ::MRCData; compress = :auto)
 

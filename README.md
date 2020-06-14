@@ -55,6 +55,22 @@ gif(anim, "emd-$(emdid)_slices.gif", fps = 30)
 
 ![EMD-5778 slices](https://github.com/sethaxen/MRC.jl/blob/master/docs/src/assets/emd-5778_slices.gif)
 
+# Reading a map as a memory-mapped array
+
+MRC files can be huge.
+It is convenient then to load their data as [memory-mapped arrays](https://docs.julialang.org/en/v1/stdlib/Mmap/).
+This is easy to do:
+
+```julia
+using MRC
+
+path = "mymap.mrc" # path to large uncompressed MRC file
+mrc = read_mmap(path, MRCData)
+... # do something
+```
+
+Note that writing to memory-mapped arrays is currently not supported.
+
 ## Related packages
 
 [mrcfile](https://github.com/ccpem/mrcfile) is a full-featured Python implementation of of the MRC2014 format.

@@ -1,6 +1,6 @@
 module MRC
 
-using Dates, Statistics, CodecZlib, CodecBzip2, CodecXz, TranscodingStreams
+using Dates, Statistics, Mmap, CodecZlib, CodecBzip2, CodecXz, TranscodingStreams
 
 export MRCHeader, MRCExtendedHeader, MRCData
 export cellangles,
@@ -18,6 +18,7 @@ export cellangles,
     header,
     origin,
     origin!,
+    read_mmap,
     start,
     start!,
     updateheader!,
