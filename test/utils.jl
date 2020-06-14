@@ -16,7 +16,10 @@ end
     @test MRC.byteorderfrommachst([0x44, 0x44, 0x00, 0x00]) == MRC.LittleEndian
     @test MRC.byteorderfrommachst([0x44, 0x41, 0x00, 0x00]) == MRC.LittleEndian
     @test MRC.byteorderfrommachst([0x11, 0x11, 0x00, 0x00]) == MRC.BigEndian
-    @test_throws DomainError MRC.byteorderfrommachst([0x00, 0x00, 0x00, 0x00])
+    @test (@test_logs (
+        :warn,
+        "Unrecognized machine stamp $([0x00, 0x00, 0x00, 0x00]). Assuming little endian",
+    ) MRC.byteorderfrommachst([0x00, 0x00, 0x00, 0x00])) == MRC.LittleEndian
 end
 
 @testset "bswaptoh" begin

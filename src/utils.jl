@@ -27,7 +27,8 @@ function byteorderfrommachst(machst)
     elseif machst[1] == MACHINE_STAMP_BIG[1] && machst[2] == MACHINE_STAMP_BIG[2]
         BigEndian
     else
-        throw(DomainError("Unrecognized machine stamp $(machst)"))
+        @warn "Unrecognized machine stamp $(machst). Assuming little endian." maxlog = 1
+        LittleEndian
     end
 end
 
