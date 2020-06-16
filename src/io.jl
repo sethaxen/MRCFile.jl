@@ -17,7 +17,12 @@ function Base.read(io::IO, ::Type{T}; compress = :auto) where {T<:MRCData}
     end
     newio = decompressstream(io, compress)
     header = read(newio, MRCHeader)
-    extendedheader = read(newio, MRCExtendedHeader; header = header)
+    ehtype = if header.exttyp == "FEI1"
+        FEI1ExtendedHeader
+    else
+        MRCExtendedHeader
+    end
+    extendedheader = read(newio, ehtype; header = header)
     d = MRCData(header, extendedheader)
     read!(newio, d.data)
     close(newio)
@@ -33,8 +38,8 @@ end
 function Base.read(io::IO, ::Type{T}) where {T<:MRCHeader}
     names = fieldnames(T)
     types = T.types
-    offsets = fieldoffsets(T)
-    bytes = read!(io, Array{UInt8}(undef, HEADER_LENGTH))
+    offsets, sz = fieldoffsets(T)
+    bytes = read!(io, Array{UInt8}(undef, sz))
     machst = bytes[213:216] # look ahead to machst
     bytes_ptr = pointer(bytes)
     vals = GC.@preserve bytes [

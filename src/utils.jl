@@ -47,6 +47,23 @@ maybeswap(fswap, x::Number) = fswap(x)
 maybeswap(fswap, x::NTuple{N,Number}) where {N} = ntuple(i -> fswap(x[i]), Val{N}())
 maybeswap(fswap) = x -> maybeswap(fswap, x)
 
+function sizeoffield(type, fname, ftype)
+    fname === :exttyp && return 4
+    fname === :map && return 4
+    fname === :label && return 800
+    return sizeof(ftype)
+end
+
+@generated function fieldoffsets(::Type{T}) where {T}
+    sizes = map(fieldnames(T), T.types) do fname, ftype
+        return sizeoffield(T, fname, ftype)
+    end
+    offsets = cumsum(sizes)
+    l = pop!(offsets)
+    pushfirst!(offsets, 0)
+    return offsets, l
+end
+
 """
     padtruncto!(x::AbstractVector, n; value = zero(eltype(x)))
 

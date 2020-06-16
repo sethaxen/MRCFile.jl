@@ -103,13 +103,6 @@ function Base.copyto!(hto::MRCHeader, hfrom::MRCHeader)
     return hto
 end
 
-function sizeoffield(name, type)
-    name === :exttyp && return 4
-    name === :map && return 4
-    name === :label && return 800
-    return sizeof(type)
-end
-
 function bytestoentry(name, type, pointer)
     name === :exttyp && return _strip_unsafe_string(pointer, 4)
     name === :map && return _strip_unsafe_string(pointer, 4)
@@ -126,14 +119,6 @@ function entrytobytes(name, value)
         return padtruncto!(Vector{UInt8}(value[i]), 80)
     end...)
     return reinterpret(UInt8, [value])
-end
-
-@generated function fieldoffsets(::Type{T}) where {T}
-    sizes = map(sizeoffield, fieldnames(T), T.types)
-    offsets = cumsum(sizes)
-    pop!(offsets)
-    pushfirst!(offsets, 0)
-    return offsets
 end
 
 Base.size(h::MRCHeader) = (h.nx, h.ny, h.nz)
