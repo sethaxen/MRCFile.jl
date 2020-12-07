@@ -20,8 +20,7 @@ The key type is `MRCData`, which contains the contents of the MRC file, accessib
 ## Installation
 
 ```julia
-using Pkg
-Pkg.add("https://github.com/sethaxen/MRC.jl")
+] add "https://github.com/sethaxen/MRC.jl"
 ```
 
 ## Example
