@@ -88,7 +88,7 @@ Base.sizeof(::Type{MRCHeader}) = 1024
 function Base.show(io::IO, ::MIME"text/plain", h::MRCHeader)
     print(io, "MRCHeader(")
     for f in fieldnames(typeof(h))
-        v = sprint(show, getfield(h, f); context = io)
+        v = sprint(show, getfield(h, f); context=io)
         print(io, "\n    $(f) = $(v),")
     end
     print(io, "\n)")

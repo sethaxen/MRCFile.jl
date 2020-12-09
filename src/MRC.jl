@@ -27,34 +27,30 @@ export cellangles,
     voxelsize!
 
 const COMPRESSIONS = (
-    gz = (
-        magic = b"\x1f\x8b\b",
-        extension = ".gz",
-        compressor = GzipCompressorStream,
-        decompressor = GzipDecompressorStream,
+    gz=(
+        magic=b"\x1f\x8b\b",
+        extension=".gz",
+        compressor=GzipCompressorStream,
+        decompressor=GzipDecompressorStream,
     ),
-    bz2 = (
-        magic = b"BZh",
-        extension = ".bz2",
-        compressor = Bzip2CompressorStream,
-        decompressor = Bzip2DecompressorStream,
+    bz2=(
+        magic=b"BZh",
+        extension=".bz2",
+        compressor=Bzip2CompressorStream,
+        decompressor=Bzip2DecompressorStream,
     ),
-    xz = (
-        magic = b"\xfd7zXZ\0",
-        extension = ".xz",
-        compressor = XzCompressorStream,
-        decompressor = XzDecompressorStream,
+    xz=(
+        magic=b"\xfd7zXZ\0",
+        extension=".xz",
+        compressor=XzCompressorStream,
+        decompressor=XzDecompressorStream,
     ),
-    none = (
-        magic = b"",
-        extension = "",
-        compressor = NoopStream,
-        decompressor = NoopStream,
-    ),
+    none=(magic=b"", extension="", compressor=NoopStream, decompressor=NoopStream),
 )
 const COMPRESSOR_MAGICS = Dict(spec.magic => type for (type, spec) in pairs(COMPRESSIONS))
-const COMPRESSOR_EXTENSIONS =
-    Dict(spec.extension => type for (type, spec) in pairs(COMPRESSIONS))
+const COMPRESSOR_EXTENSIONS = Dict(
+    spec.extension => type for (type, spec) in pairs(COMPRESSIONS)
+)
 @enum ByteOrder LittleEndian BigEndian
 const MACHINE_STAMP_LITTLE = b"DD\0\0"
 const MACHINE_STAMP_LITTLE_ALT = b"DA\0\0"

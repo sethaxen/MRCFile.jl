@@ -41,11 +41,11 @@
     end
 
     @testset "MRCHeader(kwargs...)" begin
-        h = MRCHeader(nx = 10)
+        h = MRCHeader(; nx=10)
         @test h.nx === Int32(10)
-        h2 = MRCHeader(nsymbt = 3)
+        h2 = MRCHeader(; nsymbt=3)
         @test h2.nsymbt === Int32(3)
-        h3 = MRCHeader(ispg = 2)
+        h3 = MRCHeader(; ispg=2)
         @test h3.ispg === Int32(2)
     end
 end
@@ -104,7 +104,7 @@ end
 
 @testset "copyto!(::MRCHeader, ::MRCHeader)" begin
     h = MRCHeader()
-    h2 = MRCHeader(nx = 10, ny = 10, nz = 10)
+    h2 = MRCHeader(; nx=10, ny=10, nz=10)
     copyto!(h, h2)
     @test h.nx == 10
     @test h.ny == 10
@@ -177,12 +177,12 @@ end
 end
 
 @testset "size(::MRCHeader)" begin
-    h = MRCHeader(nx = 10, ny = 20, nz = 30)
+    h = MRCHeader(; nx=10, ny=20, nz=30)
     @test size(h) == (10, 20, 30)
 end
 
 @testset "length(::MRCHeader)" begin
-    h = MRCHeader(nx = 10, ny = 20, nz = 30)
+    h = MRCHeader(; nx=10, ny=20, nz=30)
     @test length(h) == 6000
 end
 
@@ -191,31 +191,31 @@ end
 # end
 
 @testset "cellangles(::MRCHeader)" begin
-    h = MRCHeader(cellb_alpha = 10, cellb_beta = 20, cellb_gamma = 30)
-    @test cellangles(h) == (10f0, 20f0, 30f0)
+    h = MRCHeader(; cellb_alpha=10, cellb_beta=20, cellb_gamma=30)
+    @test cellangles(h) == (10.0f0, 20.0f0, 30.0f0)
 end
 
 @testset "cellangles!(::MRCHeader)" begin
     h = MRCHeader()
-    @test cellangles(h) == (90f0, 90f0, 90f0)
+    @test cellangles(h) == (90.0f0, 90.0f0, 90.0f0)
     cellangles!(h, (10, 20, 30))
-    @test cellangles(h) == (10f0, 20f0, 30f0)
+    @test cellangles(h) == (10.0f0, 20.0f0, 30.0f0)
 end
 
 @testset "cellsize(::MRCHeader)" begin
-    h = MRCHeader(cella_x = 10, cella_y = 20, cella_z = 30)
-    @test cellsize(h) == (10f0, 20f0, 30f0)
+    h = MRCHeader(; cella_x=10, cella_y=20, cella_z=30)
+    @test cellsize(h) == (10.0f0, 20.0f0, 30.0f0)
 end
 
 @testset "cellsize!(::MRCHeader)" begin
     h = MRCHeader()
-    @test cellsize(h) == (0f0, 0f0, 0f0)
+    @test cellsize(h) == (0.0f0, 0.0f0, 0.0f0)
     cellsize!(h, (10, 20, 30))
-    @test cellsize(h) == (10f0, 20f0, 30f0)
+    @test cellsize(h) == (10.0f0, 20.0f0, 30.0f0)
 end
 
 @testset "gridsize(::MRCHeader)" begin
-    h = MRCHeader(mx = 10, my = 20, mz = 30)
+    h = MRCHeader(; mx=10, my=20, mz=30)
     @test gridsize(h) == Int32.((10, 20, 30))
 end
 
@@ -227,19 +227,19 @@ end
 end
 
 @testset "origin(::MRCHeader)" begin
-    h = MRCHeader(origin_x = 10, origin_y = 20, origin_z = 30)
-    @test origin(h) == (10f0, 20f0, 30f0)
+    h = MRCHeader(; origin_x=10, origin_y=20, origin_z=30)
+    @test origin(h) == (10.0f0, 20.0f0, 30.0f0)
 end
 
 @testset "origin!(::MRCHeader)" begin
     h = MRCHeader()
-    @test origin(h) == (0f0, 0f0, 0f0)
+    @test origin(h) == (0.0f0, 0.0f0, 0.0f0)
     origin!(h, (10, 20, 30))
-    @test origin(h) == (10f0, 20f0, 30f0)
+    @test origin(h) == (10.0f0, 20.0f0, 30.0f0)
 end
 
 @testset "start(::MRCHeader)" begin
-    h = MRCHeader(nxstart = 10, nystart = 20, nzstart = 30)
+    h = MRCHeader(; nxstart=10, nystart=20, nzstart=30)
     @test start(h) == Int32.((10, 20, 30))
 end
 
@@ -252,7 +252,7 @@ end
 
 @testset "voxelsize" begin
     @testset "voxelsize(::MRCHeader)" begin
-        h = MRCHeader(cella_x = 10, cella_y = 20, cella_z = 30, mx = 2, my = 5, mz = 6)
+        h = MRCHeader(; cella_x=10, cella_y=20, cella_z=30, mx=2, my=5, mz=6)
         @test voxelsize(h) == (5.0f0, 4.0f0, 5.0f0)
     end
 
@@ -266,14 +266,14 @@ end
 
 @testset "voxelsize!" begin
     @testset "voxelsize!(::MRCHeader, s)" begin
-        h = MRCHeader(mx = 10, my = 20, mz = 30)
+        h = MRCHeader(; mx=10, my=20, mz=30)
         voxelsize!(h, (5, 10, 15))
         @test voxelsize(h) == Float32.((5, 10, 15))
         @test cellsize(h) == Float32.((50, 200, 450))
     end
 
     @testset "voxelsize!(::MRCHeader, s, i)" begin
-        h = MRCHeader(mx = 10)
+        h = MRCHeader(; mx=10)
         voxelsize!(h, 5, 1)
         @test voxelsize(h, 1) == 5
         @test h.cella_x == 50

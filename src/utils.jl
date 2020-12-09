@@ -10,7 +10,7 @@ hostbyteorder() = ifelse(Base.ENDIAN_BOM == 0x04030201, LittleEndian, BigEndian)
 
 Get the default machine stamp for the passed byte order.
 """
-function machstfrombyteorder(order::ByteOrder = hostbyteorder())
+function machstfrombyteorder(order::ByteOrder=hostbyteorder())
     return ifelse(order == LittleEndian, MACHINE_STAMP_LITTLE, MACHINE_STAMP_BIG)
 end
 
@@ -52,7 +52,7 @@ maybeswap(fswap) = x -> maybeswap(fswap, x)
 
 Pad `x` with `value` or truncate it until its length is exactly `n`.
 """
-function padtruncto!(x, n; value = zero(eltype(x)))
+function padtruncto!(x, n; value=zero(eltype(x)))
     l = length(x)
     if l < n
         append!(x, fill(eltype(x)(value), n - l))
@@ -71,11 +71,11 @@ end
 checkextension(path) = get(COMPRESSOR_EXTENSIONS, splitext(path)[end], :none)
 
 function compressstream(io, type)
-    return get(COMPRESSIONS, type, (compressor = NoopStream,)).compressor(io)
+    return get(COMPRESSIONS, type, (compressor=NoopStream,)).compressor(io)
 end
 
 function decompressstream(io, type)
-    return get(COMPRESSIONS, type, (decompressor = NoopStream,)).decompressor(io)
+    return get(COMPRESSIONS, type, (decompressor=NoopStream,)).decompressor(io)
 end
 
 function _strip_unsafe_string(pointer, size)

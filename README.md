@@ -34,7 +34,7 @@ Pkg.add("Plots")
 using MRC, FTPClient, Plots
 
 emdid = 5778 # TRPV1
-ftp = FTP(hostname="ftp.rcsb.org/pub/emdb/structures/EMD-$(emdid)/map")
+ftp = FTP(hostname = "ftp.rcsb.org/pub/emdb/structures/EMD-$(emdid)/map")
 dmap = read(download(ftp, "emd_$(emdid).map.gz"), MRCData)
 close(ftp)
 dmin, dmax = extrema(header(dmap))
