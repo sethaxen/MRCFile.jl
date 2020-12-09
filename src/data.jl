@@ -30,7 +30,7 @@ end
 function MRCData(header, extendedheader, data::AbstractArray{T,N}) where {T,N}
     return MRCData{T,N,typeof(extendedheader),typeof(data)}(header, extendedheader, data)
 end
-function MRCData(header = MRCHeader(), extendedheader = MRCExtendedHeader())
+function MRCData(header=MRCHeader(), extendedheader=MRCExtendedHeader())
     data_size = size(header)
     data_length = prod(data_size)
     dtype = datatype(header)
@@ -68,7 +68,7 @@ extendedheader(d::MRCData) = d.extendedheader
 Update the header stored in `data` from the data and its extended header.
 Set `statistics=false` to avoid computing summary statistics from the data.
 """
-function updateheader!(d::MRCData; statistics = true)
+function updateheader!(d::MRCData; statistics=true)
     h = header(d)
 
     # update size
@@ -97,7 +97,7 @@ function updateheader!(d::MRCData; statistics = true)
     if statistics
         h.dmin, h.dmax = extrema(d)
         dmean = mean(d)
-        h.dmean, h.rms = dmean, stdm(d, dmean; corrected = false)
+        h.dmean, h.rms = dmean, stdm(d, dmean; corrected=false)
     end
 
     return h
@@ -134,21 +134,21 @@ end
 
 Return an iterator over map rows.
 """
-eachmaprow(d::MRCData) = eachslice(d; dims = header(d).mapr)
+eachmaprow(d::MRCData) = eachslice(d; dims=header(d).mapr)
 
 """
     eachmapcol(d::MRCData)
 
 Return an iterator over columns.
 """
-eachmapcol(d::MRCData) = eachslice(d; dims = header(d).mapc)
+eachmapcol(d::MRCData) = eachslice(d; dims=header(d).mapc)
 
 """
     eachmapsection(d::MRCData)
 
 Return an iterator over sections.
 """
-eachmapsection(d::MRCData) = eachslice(d; dims = header(d).maps)
+eachmapsection(d::MRCData) = eachslice(d; dims=header(d).maps)
 
 """
     eachstackunit(d::MRCData)
