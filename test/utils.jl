@@ -18,7 +18,7 @@ end
     @test MRC.byteorderfrommachst([0x11, 0x11, 0x00, 0x00]) == MRC.BigEndian
     @test (@test_logs (
         :warn,
-        "Unrecognized machine stamp $([0x00, 0x00, 0x00, 0x00]). Assuming little endian",
+        "Unrecognized machine stamp $([0x00, 0x00, 0x00, 0x00]). Assuming little endian.",
     ) MRC.byteorderfrommachst([0x00, 0x00, 0x00, 0x00])) == MRC.LittleEndian
 end
 
