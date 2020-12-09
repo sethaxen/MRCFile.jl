@@ -18,24 +18,24 @@ end
     @test MRC.byteorderfrommachst([0x11, 0x11, 0x00, 0x00]) == MRC.BigEndian
     @test (@test_logs (
         :warn,
-        "Unrecognized machine stamp $([0x00, 0x00, 0x00, 0x00]). Assuming little endian",
+        "Unrecognized machine stamp $([0x00, 0x00, 0x00, 0x00]). Assuming little endian.",
     ) MRC.byteorderfrommachst([0x00, 0x00, 0x00, 0x00])) == MRC.LittleEndian
 end
 
 @testset "bswaptoh" begin
-    @test MRC.bswaptoh(MRC.LittleEndian) == maybeswap(ltoh)
-    @test MRC.bswaptoh(MRC.MACHINE_STAMP_LITTLE) == maybeswap(ltoh)
-    @test MRC.bswaptoh(MRC.MACHINE_STAMP_LITTLE_ALT) == maybeswap(ltoh)
-    @test MRC.bswaptoh(MRC.BigEndian) == maybeswap(ntoh)
-    @test MRC.bswaptoh(MRC.MACHINE_STAMP_BIG) == maybeswap(ntoh)
+    @test MRC.bswaptoh(MRC.LittleEndian) == MRC.maybeswap(ltoh)
+    @test MRC.bswaptoh(MRC.MACHINE_STAMP_LITTLE) == MRC.maybeswap(ltoh)
+    @test MRC.bswaptoh(MRC.MACHINE_STAMP_LITTLE_ALT) == MRC.maybeswap(ltoh)
+    @test MRC.bswaptoh(MRC.BigEndian) == MRC.maybeswap(ntoh)
+    @test MRC.bswaptoh(MRC.MACHINE_STAMP_BIG) == MRC.maybeswap(ntoh)
 end
 
 @testset "bswapfromh" begin
-    @test MRC.bswapfromh(MRC.LittleEndian) == maybeswap(htol)
-    @test MRC.bswapfromh(MRC.MACHINE_STAMP_LITTLE) == maybeswap(htol)
-    @test MRC.bswapfromh(MRC.MACHINE_STAMP_LITTLE_ALT) == maybeswap(htol)
-    @test MRC.bswapfromh(MRC.BigEndian) == maybeswap(hton)
-    @test MRC.bswapfromh(MRC.MACHINE_STAMP_BIG) == maybeswap(hton)
+    @test MRC.bswapfromh(MRC.LittleEndian) == MRC.maybeswap(htol)
+    @test MRC.bswapfromh(MRC.MACHINE_STAMP_LITTLE) == MRC.maybeswap(htol)
+    @test MRC.bswapfromh(MRC.MACHINE_STAMP_LITTLE_ALT) == MRC.maybeswap(htol)
+    @test MRC.bswapfromh(MRC.BigEndian) == MRC.maybeswap(hton)
+    @test MRC.bswapfromh(MRC.MACHINE_STAMP_BIG) == MRC.maybeswap(hton)
 end
 
 @testset "maybeswap" begin
