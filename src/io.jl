@@ -98,10 +98,8 @@ function Base.write(io::IO, d::MRCData; compress = :none)
     sz += write(newio, extendedheader(d))
     T = datatype(h)
     data = parent(d)
-    fswap = bswapfromh(h.machst)
-    for i in eachindex(data)
-        @inbounds sz += write(newio, fswap(T(data[i])))
-    end
+    fswap = bswapfromh(h.machst) 
+    write(newio,(fswap.(T.(data))))
     close(newio)
     return sz
 end
