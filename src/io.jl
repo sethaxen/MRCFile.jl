@@ -99,18 +99,14 @@ function Base.write(io::IO, d::MRCData; compress = :none)
     T = datatype(h)
     data = parent(d)
     fswap = bswapfromh(h.machst)
-    begin
-        # memory page size: 4kB
-        pagesize = 4096
-        unit_vsize = pagesize÷sizeof(T)
-        vlen = length(data)
-        vrem = vlen%unit_vsize 
-        if vrem != 0
-            @inbounds sz += write(newio, fswap.(T.(data[begin:vrem])))
-        end
-        for i in (vrem+1):unit_vsize:vlen
-            @inbounds sz += write(newio, fswap.(T.(data[i:i+unit_vsize-1])))
-        end
+    unit_vsize = 4096 ÷ sizeof(T)
+    vlen = length(data)
+    vrem = vlen % unit_vsize 
+    if vrem != 0
+        @inbounds sz += write(newio, fswap.(T.(data[begin:vrem])))
+    end
+    for i in (vrem + 1):unit_vsize:vlen
+        @inbounds sz += write(newio, fswap.(T.(data[i:i + unit_vsize - 1])))
     end
     close(newio)
     return sz
