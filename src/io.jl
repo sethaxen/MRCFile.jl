@@ -101,12 +101,12 @@ function Base.write(io::IO, d::MRCData; compress = :none)
     fswap = bswapfromh(h.machst)
     unit_vsize = 4096 ÷ sizeof(T)
     vlen = length(data)
-    vrem = vlen % unit_vsize 
+    vrem = vlen % unit_vsize
     if vrem != 0
         @inbounds sz += write(newio, fswap.(T.(data[begin:vrem])))
     end
     for i in (vrem + 1):unit_vsize:vlen
-        @inbounds sz += write(newio, fswap.(T.(data[i:i + unit_vsize - 1])))
+        @inbounds sz += write(newio, fswap.(T.(data[i:(i + unit_vsize - 1)])))
     end
     close(newio)
     return sz
