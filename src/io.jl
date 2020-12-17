@@ -103,7 +103,7 @@ function Base.write(io::IO, d::MRCData; compress = :none)
     vlen = length(data)
     vrem = vlen % unit_vsize
     if vrem != 0
-        @inbounds sz += write(newio, fswap.(T.(data[begin:vrem])))
+        @inbounds sz += write(newio, fswap.(T.(data[1:vrem])))
     end
     for i in (vrem + 1):unit_vsize:vlen
         @inbounds sz += write(newio, fswap.(T.(data[i:(i + unit_vsize - 1)])))
