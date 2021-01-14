@@ -106,7 +106,7 @@ function Base.write(io::IO, d::MRCData; compress = :none)
         @inbounds sz += write(newio, fswap.(T.(data[1:vrem])))
     end
     for i in (vrem + 1):unit_vsize:vlen
-        @inbounds sz += write(newio, fswap.(T.(data[i:(i + unit_vsize - 1)])))
+        @inbounds @views sz += write(newio, fswap.(T.(data[i:(i + unit_vsize - 1)])))
     end
     close(newio)
     return sz
