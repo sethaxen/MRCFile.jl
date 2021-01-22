@@ -11,22 +11,22 @@ Use `compress` to specify the decompression with the following options:
 - `:none`: no compression
 """
 read(::Any, ::Type{<:MRCData})
-function Base.read(io::IO, ::Type{T}; compress = :auto) where {T<:MRCData}
+function Base.read(io::IO, ::Type{T}; compress=:auto) where {T<:MRCData}
     if compress == :auto
         compress = checkmagic(io)
     end
     newio = decompressstream(io, compress)
     header = read(newio, MRCHeader)
-    extendedheader = read(newio, MRCExtendedHeader; header = header)
+    extendedheader = read(newio, MRCExtendedHeader; header=header)
     d = MRCData(header, extendedheader)
     read!(newio, d.data)
     close(newio)
     map!(bswaptoh(header.machst), d.data, d.data)
     return d
 end
-function Base.read(fn::AbstractString, ::Type{T}; compress = :auto) where {T<:MRCData}
-    return open(fn; read = true) do io
-        return read(io, T; compress = compress)
+function Base.read(fn::AbstractString, ::Type{T}; compress=:auto) where {T<:MRCData}
+    return open(fn; read=true) do io
+        return read(io, T; compress=compress)
     end
 end
 
@@ -45,12 +45,7 @@ function Base.read(io::IO, ::Type{T}) where {T<:MRCHeader}
     return header
 end
 
-function Base.read(
-    io::IO,
-    ::Type{T};
-    length = 0,
-    header = nothing,
-) where {T<:MRCExtendedHeader}
+function Base.read(io::IO, ::Type{T}; length=0, header=nothing) where {T<:MRCExtendedHeader}
     # TODO: use h.exttyp to identify extended header format and parse into a human-readable type
     if header !== nothing && length == 0
         length = header.nsymbt
@@ -67,7 +62,7 @@ Read MRC file or stream, using a memory-mapped array to access the data.
 """
 function read_mmap(io::IO, ::Type{MRCData})
     head = read(io, MRCHeader)
-    exthead = read(io, MRCExtendedHeader; header = head)
+    exthead = read(io, MRCExtendedHeader; header=head)
     arraytype = Array{MRC.datatype(head),ndims(head)}
     data = Mmap.mmap(io, arraytype, size(head)[1:ndims(head)])
     return MRCData(head, exthead, data)
@@ -91,7 +86,7 @@ Use `compress` to specify the compression with the following options:
 - `:none`: no compression
 """
 write(::Any, ::MRCData)
-function Base.write(io::IO, d::MRCData; compress = :none, unit_vsize = 4096)
+function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096)
     newio = compressstream(io, compress)
     h = header(d)
     sz = write(newio, h)
@@ -111,17 +106,12 @@ function Base.write(io::IO, d::MRCData; compress = :none, unit_vsize = 4096)
     close(newio)
     return sz
 end
-function Base.write(
-    fn::AbstractString,
-    object::T;
-    compress = :auto,
-    unit_vsize = 4096,
-) where {T<:Union{MRCData}}
+function Base.write(fn::AbstractString, object::T; compress=:auto, unit_vsize=4096) where {T<:Union{MRCData}}
     if compress == :auto
         compress = checkextension(fn)
     end
-    return open(fn; write = true) do io
-        return write(io, object; compress = compress, unit_vsize = unit_vsize)
+    return open(fn; write=true) do io
+        return write(io, object; compress=compress, unit_vsize=unit_vsize)
     end
 end
 

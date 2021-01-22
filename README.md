@@ -1,15 +1,10 @@
 # MRC.jl
-
-![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)<!--
-![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
-![Lifecycle](https://img.shields.io/badge/lifecycle-stable-green.svg)
-![Lifecycle](https://img.shields.io/badge/lifecycle-retired-orange.svg)
-![Lifecycle](https://img.shields.io/badge/lifecycle-archived-red.svg)
-![Lifecycle](https://img.shields.io/badge/lifecycle-dormant-blue.svg) -->
+![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
+[![Build Status](https://github.com/sethaxen/MRC.jl/workflows/CI/badge.svg)](https://github.com/sethaxen/MRC.jl/actions?query=workflow%3ACI+branch%3Amaster)
+[![Coverage](https://codecov.io/gh/sethaxen/MRC.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/sethaxen/MRC.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://sethaxen.github.io/MRC.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://sethaxen.github.io/MRC.jl/dev)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
-[![CI](https://github.com/JuliaManifolds/Manifolds.jl/workflows/CI/badge.svg)](https://github.com/sethaxen/MRC.jl/actions?query=workflow%3ACI+branch%3Amaster)
-[![codecov.io](http://codecov.io/github/sethaxen/MRC.jl/coverage.svg?branch=master)](http://codecov.io/github/sethaxen/MRC.jl?branch=master)
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)](https://sethaxen.github.io/MRC.jl/dev)
 
 MRC.jl implements the [MRC2014 format](https://www.ccpem.ac.uk/mrc_format/mrc2014.php) for storing image and volume data such as those produced by electron microscopy.
 It offers the ability to read, edit, and write MRC files, as well as utility functions for extracting useful information from the headers.
@@ -39,7 +34,7 @@ Pkg.add("Plots")
 using MRC, FTPClient, Plots
 
 emdid = 5778 # TRPV1
-ftp = FTP(hostname="ftp.rcsb.org/pub/emdb/structures/EMD-$(emdid)/map")
+ftp = FTP(hostname = "ftp.rcsb.org/pub/emdb/structures/EMD-$(emdid)/map")
 dmap = read(download(ftp, "emd_$(emdid).map.gz"), MRCData)
 close(ftp)
 dmin, dmax = extrema(header(dmap))
