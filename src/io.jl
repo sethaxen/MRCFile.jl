@@ -91,7 +91,7 @@ Use `compress` to specify the compression with the following options:
 - `:none`: no compression
 """
 write(::Any, ::MRCData)
-function Base.write(io::IO, d::MRCData; compress = :none)
+function Base.write(io::IO, d::MRCData; compress = :none, unit_vsize = 4096)
     newio = compressstream(io, compress)
     h = header(d)
     sz = write(newio, h)
@@ -99,7 +99,7 @@ function Base.write(io::IO, d::MRCData; compress = :none)
     T = datatype(h)
     data = parent(d)
     fswap = bswapfromh(h.machst)
-    unit_vsize = div(4096, sizeof(T))
+    unit_vsize = div(unit_vsize, sizeof(T))
     vlen = length(data)
     vrem = vlen % unit_vsize
     if vrem != 0
@@ -115,12 +115,13 @@ function Base.write(
     fn::AbstractString,
     object::T;
     compress = :auto,
+    unit_vsize = 4096,
 ) where {T<:Union{MRCData}}
     if compress == :auto
         compress = checkextension(fn)
     end
     return open(fn; write = true) do io
-        return write(io, object; compress = compress)
+        return write(io, object; compress = compress, unit_vsize = unit_vsize)
     end
 end
 
