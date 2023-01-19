@@ -74,8 +74,8 @@ function read_mmap(path::AbstractString, T::Type{MRCData})
 end
 
 """
-    write(io::IO, ::MRCData; compress = :none)
-    write(fn::AbstractString, ::MRCData; compress = :auto)
+    write(io::IO, ::MRCData; compress = :none, unit_vsize = 4096)
+    write(fn::AbstractString, ::MRCData; compress = :auto, unit_vsize = 4096)
 
 Write an instance of [`MRCData`](@ref) to an IO stream or new file.
 Use `compress` to specify the compression with the following options:
@@ -84,6 +84,9 @@ Use `compress` to specify the compression with the following options:
 - `:bz2`: BZ2
 - `:xz`: XZ
 - `:none`: no compression
+
+The parameter `unit_vsize` specifies the size (in bytes) of an intermediate
+buffer that is used to speed up the writing.
 """
 write(::Any, ::MRCData)
 function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096)
@@ -95,13 +98,16 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096)
     data = parent(d)
     fswap = bswapfromh(h.machst)
     unit_vsize = div(unit_vsize, sizeof(T))
+    buffer = Vector{T}(undef, unit_vsize)
     vlen = length(data)
     vrem = vlen % unit_vsize
     if vrem != 0
-        @inbounds @views sz += write(newio, fswap.(T.(data[1:vrem])))
+        @inbounds @views buffer[1:vrem] .= fswap.(T.(data[1:vrem]))
+        @inbounds @views sz += write(newio, buffer[1:vrem])
     end
     for i in (vrem + 1):unit_vsize:vlen
-        @inbounds @views sz += write(newio, fswap.(T.(data[i:(i + unit_vsize - 1)])))
+        @inbounds @views buffer .= fswap.(T.(data[i:i + unit_vsize - 1]))
+        @inbounds sz += write(newio, buffer)
     end
     close(newio)
     return sz
