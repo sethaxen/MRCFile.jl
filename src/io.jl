@@ -74,8 +74,8 @@ function read_mmap(path::AbstractString, T::Type{MRCData})
 end
 
 """
-    write(io::IO, ::MRCData; compress = :none, unit_vsize = 4096)
-    write(fn::AbstractString, ::MRCData; compress = :auto, unit_vsize = 4096)
+    write(io::IO, ::MRCData; compress = :none, unit_vsize = 4096, buffer = nothing)
+    write(fn::AbstractString, ::MRCData; compress = :auto, unit_vsize = 4096, buffer = nothing)
 
 Write an instance of [`MRCData`](@ref) to an IO stream or new file.
 Use `compress` to specify the compression with the following options:
@@ -87,9 +87,13 @@ Use `compress` to specify the compression with the following options:
 
 The parameter `unit_vsize` specifies the size (in bytes) of an intermediate
 buffer that is used to speed up the writing.
+
+You can also directly provide a preallocated buffer as a `Vector`.
+In that case, `unit_vsize` has no effect.
+Note that `eltype(buffer)` must match the data type of the MRC data.
 """
 write(::Any, ::MRCData)
-function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096)
+function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer::Union{Nothing, Vector}=nothing)
     newio = compressstream(io, compress)
     h = header(d)
     sz = write(newio, h)
@@ -98,7 +102,13 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096)
     data = parent(d)
     fswap = bswapfromh(h.machst)
     unit_vsize = div(unit_vsize, sizeof(T))
-    buffer = Vector{T}(undef, unit_vsize)
+    if isnothing(buffer)
+        buffer = Vector{T}(undef, unit_vsize)
+    end
+    buffer::Vector{T}
+    # If `buffer` was provided as a parameter then `unit_vsize` is redundant and
+    # we must make sure that it matches buffer.
+    unit_vsize = length(buffer)
     vlen = length(data)
     vrem = vlen % unit_vsize
     if vrem != 0
@@ -112,12 +122,12 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096)
     close(newio)
     return sz
 end
-function Base.write(fn::AbstractString, object::T; compress=:auto, unit_vsize=4096) where {T<:Union{MRCData}}
+function Base.write(fn::AbstractString, object::T; compress=:auto, kwargs...) where {T<:Union{MRCData}}
     if compress == :auto
         compress = checkextension(fn)
     end
     return open(fn; write=true) do io
-        return write(io, object; compress=compress, unit_vsize=unit_vsize)
+        return write(io, object; compress, kwargs...)
     end
 end
 
