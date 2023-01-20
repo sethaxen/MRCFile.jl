@@ -93,7 +93,13 @@ In that case, `unit_vsize` has no effect.
 Note that `eltype(buffer)` must match the data type of the MRC data.
 """
 write(::Any, ::MRCData)
-function Base.write(io::IO, d::MRCData; compress=:none, buffer_size=4096, buffer::Union{Nothing, Vector}=nothing)
+function Base.write(
+    io::IO,
+    d::MRCData;
+    compress=:none,
+    buffer_size=4096,
+    buffer::Union{Nothing,Vector}=nothing,
+)
     newio = compressstream(io, compress)
     h = header(d)
     sz = write(newio, h)
@@ -105,7 +111,11 @@ function Base.write(io::IO, d::MRCData; compress=:none, buffer_size=4096, buffer
     if buffer === nothing
         buffer = Vector{T}(undef, buffer_size)
     elseif !(buffer isa Vector{T})
-        throw(ArgumentError("`buffer` must be `nothing` or a `Vector{$T}`, but `$(typeof(buffer))` was provided"))
+        throw(
+            ArgumentError(
+                "`buffer` must be `nothing` or a `Vector{$T}`, but `$(typeof(buffer))` was provided",
+            ),
+        )
     end
     # If `buffer` was provided as a parameter then `buffer_size` is redundant and
     # we must make sure that it matches `buffer`.
@@ -117,8 +127,8 @@ function Base.write(io::IO, d::MRCData; compress=:none, buffer_size=4096, buffer
             buffer[1:vrem] .= fswap.(T.(data[1:vrem]))
             sz += write(newio, buffer[1:vrem])
         end
-        for i in vrem + 1:buffer_size:vlen
-            buffer .= fswap.(T.(data[i:i + buffer_size - 1]))
+        for i in (vrem + 1):buffer_size:vlen
+            buffer .= fswap.(T.(data[i:(i + buffer_size - 1)]))
             sz += write(newio, buffer)
         end
     end
@@ -126,7 +136,9 @@ function Base.write(io::IO, d::MRCData; compress=:none, buffer_size=4096, buffer
     flush(newio)
     return sz
 end
-function Base.write(fn::AbstractString, object::T; compress=:auto, kwargs...) where {T<:Union{MRCData}}
+function Base.write(
+    fn::AbstractString, object::T; compress=:auto, kwargs...
+) where {T<:Union{MRCData}}
     if compress == :auto
         compress = checkextension(fn)
     end

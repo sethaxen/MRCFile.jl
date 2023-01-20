@@ -128,11 +128,11 @@ end
     @test MRC.entrytobytes(:map, "abc") == [0x61, 0x62, 0x63, 0x00]
     @test MRC.entrytobytes(:map, "abcde") == [0x61, 0x62, 0x63, 0x64]
     @test MRC.entrytobytes(:label, ("abcd", ntuple(_ -> "", 9)...))[1:80] ==
-          [0x61; 0x62; 0x63; 0x64; zeros(UInt8, 76)]
+        [0x61; 0x62; 0x63; 0x64; zeros(UInt8, 76)]
     @test MRC.entrytobytes(:testfloat, Float32(3)) == reinterpret(UInt8, [Float32(3)])
     @test MRC.entrytobytes(:testint, Int32(3)) == reinterpret(UInt8, [Int32(3)])
     @test MRC.entrytobytes(:testuintbool, (0x01, 0x02, 0x03, 0x04)) ==
-          [0x01, 0x02, 0x03, 0x04]
+        [0x01, 0x02, 0x03, 0x04]
 end
 
 @testset "fieldoffsets" begin

@@ -43,7 +43,8 @@
             @test h.machst === (0x44, 0x41, 0x0, 0x0)
             @test h.rms === Float32(0.15705723)
             @test h.nlabl === Int32(1)
-            @test h.label == ("::::EMDATABANK.org::::EMD-3001::::", "", "", "", "", "", "", "", "", "")
+            @test h.label ==
+                ("::::EMDATABANK.org::::EMD-3001::::", "", "", "", "", "", "", "", "", "")
         end
 
         @testset "emd3197.map" begin
@@ -89,7 +90,8 @@
             @test h.machst === (0x44, 0x41, 0x0, 0x0)
             @test h.rms === Float32(2.399953)
             @test h.nlabl === Int32(1)
-            @test h.label == ("::::EMDATABANK.org::::EMD-3197::::", "", "", "", "", "", "", "", "", "")
+            @test h.label ==
+                ("::::EMDATABANK.org::::EMD-3197::::", "", "", "", "", "", "", "", "", "")
         end
     end
 end
@@ -102,7 +104,7 @@ end
         for buffer_size in buffer_sizes
             @testset "buffer size: $buffer_size" begin
                 # no preallocation
-                io = IOBuffer(read = true, write = true)
+                io = IOBuffer(; read=true, write=true)
                 write(io, emd3001; buffer_size=buffer_size)
                 closewrite(io)
                 seekstart(io)
@@ -110,7 +112,7 @@ end
                 close(io)
 
                 # with preallocation
-                io = IOBuffer(read = true, write = true)
+                io = IOBuffer(; read=true, write=true)
                 buffer = Vector{Float32}(undef, buffer_size)
                 write(io, emd3001; buffer=buffer)
                 closewrite(io)
