@@ -102,10 +102,11 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer:
     data = parent(d)
     fswap = bswapfromh(h.machst)
     unit_vsize = div(unit_vsize, sizeof(T))
-    if isnothing(buffer)
+    if buffer === nothing
         buffer = Vector{T}(undef, unit_vsize)
+    elseif !(buffer isa Vector{T})
+        throw(ArgumentError("`buffer` must be `nothing` or a `Vector{$T}`, but `$(typeof(buffer))` was provided"))
     end
-    buffer::Vector{T}
     # If `buffer` was provided as a parameter then `unit_vsize` is redundant and
     # we must make sure that it matches `buffer`.
     unit_vsize = length(buffer)
@@ -130,7 +131,7 @@ function Base.write(fn::AbstractString, object::T; compress=:auto, kwargs...) wh
         compress = checkextension(fn)
     end
     return open(fn; write=true) do io
-        return write(io, object; compress, kwargs...)
+        return write(io, object; compress=compress, kwargs...)
     end
 end
 
