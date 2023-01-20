@@ -43,7 +43,8 @@
             @test h.machst === (0x44, 0x41, 0x0, 0x0)
             @test h.rms === Float32(0.15705723)
             @test h.nlabl === Int32(1)
-            @test h.label == ("::::EMDATABANK.org::::EMD-3001::::", "", "", "", "", "", "", "", "", "")
+            @test h.label ==
+                ("::::EMDATABANK.org::::EMD-3001::::", "", "", "", "", "", "", "", "", "")
         end
 
         @testset "emd3197.map" begin
@@ -89,7 +90,42 @@
             @test h.machst === (0x44, 0x41, 0x0, 0x0)
             @test h.rms === Float32(2.399953)
             @test h.nlabl === Int32(1)
-            @test h.label == ("::::EMDATABANK.org::::EMD-3197::::", "", "", "", "", "", "", "", "", "")
+            @test h.label ==
+                ("::::EMDATABANK.org::::EMD-3197::::", "", "", "", "", "", "", "", "", "")
         end
+    end
+end
+
+@testset "write" begin
+    @testset "buffer size has no effect on data" begin
+        emd3001 = read("$(@__DIR__)/testdata/emd_3001.map", MRCData)
+        buffer_sizes = [1024, 2048, 4096, 100, 42]
+
+        for buffer_size in buffer_sizes
+            @testset "buffer size: $buffer_size" begin
+                # no preallocation
+                io = IOBuffer(; read=true, write=true)
+                write(io, emd3001; buffer_size=buffer_size)
+                flush(io)
+                seekstart(io)
+                @test read(io, MRCData) == emd3001
+                close(io)
+
+                # with preallocation
+                io = IOBuffer(; read=true, write=true)
+                buffer = Vector{Float32}(undef, buffer_size)
+                write(io, emd3001; buffer=buffer)
+                flush(io)
+                seekstart(io)
+                @test read(io, MRCData) == emd3001
+                close(io)
+            end
+        end
+    end
+
+    @testset "buffer eltype must match data type" begin
+        emd3001 = read("$(@__DIR__)/testdata/emd_3001.map", MRCData)
+        buffer = Vector{Float64}(undef, 1)
+        @test_throws ArgumentError write(IOBuffer(), emd3001; buffer=buffer)
     end
 end

@@ -74,8 +74,8 @@ function read_mmap(path::AbstractString, T::Type{MRCData})
 end
 
 """
-    write(io::IO, ::MRCData; compress = :none)
-    write(fn::AbstractString, ::MRCData; compress = :auto)
+    write(io::IO, ::MRCData; compress = :none, buffer_size = 4096, buffer = nothing)
+    write(fn::AbstractString, ::MRCData; compress = :auto, buffer_size = 4096, buffer = nothing)
 
 Write an instance of [`MRCData`](@ref) to an IO stream or new file.
 Use `compress` to specify the compression with the following options:
@@ -84,9 +84,22 @@ Use `compress` to specify the compression with the following options:
 - `:bz2`: BZ2
 - `:xz`: XZ
 - `:none`: no compression
+
+The parameter `buffer_size` specifies the size (in bytes) of an intermediate
+buffer that is used to speed up the writing by utilizing vectorized writes.
+
+You can also directly provide a preallocated buffer as a `Vector`.
+In that case, `buffer_size` has no effect.
+Note that `eltype(buffer)` must match the data type of the MRC data.
 """
 write(::Any, ::MRCData)
-function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096)
+function Base.write(
+    io::IO,
+    d::MRCData;
+    compress=:none,
+    buffer_size=4096,
+    buffer::Union{Nothing,Vector}=nothing,
+)
     newio = compressstream(io, compress)
     h = header(d)
     sz = write(newio, h)
@@ -94,24 +107,43 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096)
     T = datatype(h)
     data = parent(d)
     fswap = bswapfromh(h.machst)
-    unit_vsize = div(unit_vsize, sizeof(T))
+    buffer_size = div(buffer_size, sizeof(T))
+    if buffer === nothing
+        buffer = Vector{T}(undef, buffer_size)
+    elseif !(buffer isa Vector{T})
+        throw(
+            ArgumentError(
+                "`buffer` must be `nothing` or a `Vector{$T}`, but `$(typeof(buffer))` was provided",
+            ),
+        )
+    end
+    # If `buffer` was provided as a parameter then `buffer_size` is redundant and
+    # we must make sure that it matches `buffer`.
+    buffer_size = length(buffer)
     vlen = length(data)
-    vrem = vlen % unit_vsize
-    if vrem != 0
-        @inbounds @views sz += write(newio, fswap.(T.(data[1:vrem])))
+    vrem = vlen % buffer_size
+    @inbounds @views begin
+        if vrem != 0
+            buffer[1:vrem] .= fswap.(T.(data[1:vrem]))
+            sz += write(newio, buffer[1:vrem])
+        end
+        for i in (vrem + 1):buffer_size:vlen
+            buffer .= fswap.(T.(data[i:(i + buffer_size - 1)]))
+            sz += write(newio, buffer)
+        end
     end
-    for i in (vrem + 1):unit_vsize:vlen
-        @inbounds @views sz += write(newio, fswap.(T.(data[i:(i + unit_vsize - 1)])))
-    end
-    close(newio)
+    write(newio, TranscodingStreams.TOKEN_END)
+    flush(newio)
     return sz
 end
-function Base.write(fn::AbstractString, object::T; compress=:auto, unit_vsize=4096) where {T<:Union{MRCData}}
+function Base.write(
+    fn::AbstractString, object::T; compress=:auto, kwargs...
+) where {T<:Union{MRCData}}
     if compress == :auto
         compress = checkextension(fn)
     end
     return open(fn; write=true) do io
-        return write(io, object; compress=compress, unit_vsize=unit_vsize)
+        return write(io, object; compress=compress, kwargs...)
     end
 end
 
