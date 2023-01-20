@@ -111,13 +111,15 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer:
     unit_vsize = length(buffer)
     vlen = length(data)
     vrem = vlen % unit_vsize
-    if vrem != 0
-        @inbounds @views buffer[1:vrem] .= fswap.(T.(data[1:vrem]))
-        @inbounds @views sz += write(newio, buffer[1:vrem])
-    end
-    for i in (vrem + 1):unit_vsize:vlen
-        @inbounds @views buffer .= fswap.(T.(data[i:i + unit_vsize - 1]))
-        @inbounds sz += write(newio, buffer)
+    @inbounds @views begin
+        if vrem != 0
+            buffer[1:vrem] .= fswap.(T.(data[1:vrem]))
+            sz += write(newio, buffer[1:vrem])
+        end
+        for i in vrem + 1:unit_vsize:vlen
+            buffer .= fswap.(T.(data[i:i + unit_vsize - 1]))
+            sz += write(newio, buffer)
+        end
     end
     write(newio, TranscodingStreams.TOKEN_END)
     flush(newio)
