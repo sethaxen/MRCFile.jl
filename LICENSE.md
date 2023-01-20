@@ -1,4 +1,4 @@
-The MRC.jl package is licensed under the MIT "Expat" License:
+The MRCFile.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2020: Seth Axen.
 >

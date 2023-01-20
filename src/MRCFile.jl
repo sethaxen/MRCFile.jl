@@ -1,4 +1,4 @@
-module MRC
+module MRCFile
 
 using Dates, Statistics, Mmap, CodecZlib, CodecBzip2, CodecXz, TranscodingStreams
 

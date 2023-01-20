@@ -1,7 +1,7 @@
-using MRC, TranscodingStreams
+using MRCFile, TranscodingStreams
 using Test
 
-@testset "MRC.jl" begin
+@testset "MRCFile.jl" begin
     include("utils.jl")
     include("header.jl")
     include("io.jl")

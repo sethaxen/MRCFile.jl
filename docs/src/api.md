@@ -1,7 +1,7 @@
 # API
 
 ```@autodocs
-Modules = [MRC]
+Modules = [MRCFile]
 Private = false
 Order = [:type, :function]
 ```

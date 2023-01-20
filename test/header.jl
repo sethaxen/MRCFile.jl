@@ -32,12 +32,12 @@
         @test h.origin_y === Float32(0)
         @test h.origin_z === Float32(0)
         @test h.map === "MAP "
-        @test h.machst === Tuple(MRC.machstfrombyteorder())
+        @test h.machst === Tuple(MRCFile.machstfrombyteorder())
         @test h.rms === Float32(-1)
         @test h.nlabl === Int32(1)
         @test length(h.label) == 10
         @test length(h.label[1]) < 80
-        @test startswith(h.label[1], "Created by MRC.jl at ")
+        @test startswith(h.label[1], "Created by MRCFile.jl at ")
     end
 
     @testset "MRCHeader(kwargs...)" begin
@@ -119,24 +119,24 @@ end
     (:testint, Int32, sizeof(Int32)),
     (:testuintbool, NTuple{8,UInt8}, sizeof(NTuple{8,UInt8})),
 )
-    @test MRC.sizeoffield(name, type) == s
+    @test MRCFile.sizeoffield(name, type) == s
 end
 
 @testset "entrytobytes" begin
-    @test MRC.entrytobytes(:exttyp, "abc") == [0x61, 0x62, 0x63, 0x00]
-    @test MRC.entrytobytes(:exttyp, "abcde") == [0x61, 0x62, 0x63, 0x64]
-    @test MRC.entrytobytes(:map, "abc") == [0x61, 0x62, 0x63, 0x00]
-    @test MRC.entrytobytes(:map, "abcde") == [0x61, 0x62, 0x63, 0x64]
-    @test MRC.entrytobytes(:label, ("abcd", ntuple(_ -> "", 9)...))[1:80] ==
+    @test MRCFile.entrytobytes(:exttyp, "abc") == [0x61, 0x62, 0x63, 0x00]
+    @test MRCFile.entrytobytes(:exttyp, "abcde") == [0x61, 0x62, 0x63, 0x64]
+    @test MRCFile.entrytobytes(:map, "abc") == [0x61, 0x62, 0x63, 0x00]
+    @test MRCFile.entrytobytes(:map, "abcde") == [0x61, 0x62, 0x63, 0x64]
+    @test MRCFile.entrytobytes(:label, ("abcd", ntuple(_ -> "", 9)...))[1:80] ==
         [0x61; 0x62; 0x63; 0x64; zeros(UInt8, 76)]
-    @test MRC.entrytobytes(:testfloat, Float32(3)) == reinterpret(UInt8, [Float32(3)])
-    @test MRC.entrytobytes(:testint, Int32(3)) == reinterpret(UInt8, [Int32(3)])
-    @test MRC.entrytobytes(:testuintbool, (0x01, 0x02, 0x03, 0x04)) ==
+    @test MRCFile.entrytobytes(:testfloat, Float32(3)) == reinterpret(UInt8, [Float32(3)])
+    @test MRCFile.entrytobytes(:testint, Int32(3)) == reinterpret(UInt8, [Int32(3)])
+    @test MRCFile.entrytobytes(:testuintbool, (0x01, 0x02, 0x03, 0x04)) ==
         [0x01, 0x02, 0x03, 0x04]
 end
 
 @testset "fieldoffsets" begin
-    @test MRC.fieldoffsets(MRCHeader) == [
+    @test MRCFile.fieldoffsets(MRCHeader) == [
         0,
         4,
         8,
