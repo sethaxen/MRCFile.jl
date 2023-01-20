@@ -107,7 +107,7 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer:
     end
     buffer::Vector{T}
     # If `buffer` was provided as a parameter then `unit_vsize` is redundant and
-    # we must make sure that it matches buffer.
+    # we must make sure that it matches `buffer`.
     unit_vsize = length(buffer)
     vlen = length(data)
     vrem = vlen % unit_vsize
@@ -119,7 +119,8 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer:
         @inbounds @views buffer .= fswap.(T.(data[i:i + unit_vsize - 1]))
         @inbounds sz += write(newio, buffer)
     end
-    close(newio)
+    write(newio, TranscodingStreams.TOKEN_END)
+    flush(newio)
     return sz
 end
 function Base.write(fn::AbstractString, object::T; compress=:auto, kwargs...) where {T<:Union{MRCData}}
