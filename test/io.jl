@@ -103,7 +103,7 @@ end
             @testset "buffer size: $buffer_size" begin
                 # no preallocation
                 io = IOBuffer(read = true, write = true)
-                mem_non_prealloc = @allocated write(io, emd3001; unit_vsize = buffer_size)
+                write(io, emd3001; buffer_size=buffer_size)
                 closewrite(io)
                 seekstart(io)
                 @test read(io, MRCData) == emd3001
@@ -112,12 +112,18 @@ end
                 # with preallocation
                 io = IOBuffer(read = true, write = true)
                 buffer = Vector{Float32}(undef, buffer_size)
-                mem_prealloc = @allocated write(io, emd3001; buffer=buffer)
+                write(io, emd3001; buffer=buffer)
                 closewrite(io)
                 seekstart(io)
                 @test read(io, MRCData) == emd3001
                 close(io)
             end
         end
+    end
+
+    @testset "buffer eltype must match data type" begin
+        emd3001 = read("$(@__DIR__)/testdata/emd_3001.map", MRCData)
+        buffer = Vector{Float64}(undef, 1)
+        @test_throws ArgumentError write(IOBuffer(), emd3001; buffer=buffer)
     end
 end
