@@ -102,7 +102,7 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer:
     data = parent(d)
     fswap = bswapfromh(h.machst)
     unit_vsize = div(unit_vsize, sizeof(T))
-    if isnothing(buffer)
+    if buffer === nothing
         buffer = Vector{T}(undef, unit_vsize)
     end
     buffer::Vector{T}
