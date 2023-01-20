@@ -112,7 +112,7 @@ end
                 # with preallocation
                 io = IOBuffer(read = true, write = true)
                 buffer = Vector{Float32}(undef, buffer_size)
-                mem_prealloc = @allocated write(io, emd3001; buffer)
+                mem_prealloc = @allocated write(io, emd3001; buffer=buffer)
                 closewrite(io)
                 seekstart(io)
                 @test read(io, MRCData) == emd3001
