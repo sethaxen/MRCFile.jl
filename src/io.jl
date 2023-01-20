@@ -128,7 +128,7 @@ function Base.write(fn::AbstractString, object::T; compress=:auto, kwargs...) wh
         compress = checkextension(fn)
     end
     return open(fn; write=true) do io
-        return write(io, object; compress, kwargs...)
+        return write(io, object; compress=compress, kwargs...)
     end
 end
 
