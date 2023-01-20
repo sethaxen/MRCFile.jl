@@ -74,8 +74,8 @@ function read_mmap(path::AbstractString, T::Type{MRCData})
 end
 
 """
-    write(io::IO, ::MRCData; compress = :none, unit_vsize = 4096, buffer = nothing)
-    write(fn::AbstractString, ::MRCData; compress = :auto, unit_vsize = 4096, buffer = nothing)
+    write(io::IO, ::MRCData; compress = :none, buffer_size = 4096, buffer = nothing)
+    write(fn::AbstractString, ::MRCData; compress = :auto, buffer_size = 4096, buffer = nothing)
 
 Write an instance of [`MRCData`](@ref) to an IO stream or new file.
 Use `compress` to specify the compression with the following options:
@@ -89,7 +89,7 @@ The parameter `buffer_size` specifies the size (in bytes) of an intermediate
 buffer that is used to speed up the writing by utilizing vectorized writes.
 
 You can also directly provide a preallocated buffer as a `Vector`.
-In that case, `unit_vsize` has no effect.
+In that case, `buffer_size` has no effect.
 Note that `eltype(buffer)` must match the data type of the MRC data.
 """
 write(::Any, ::MRCData)
