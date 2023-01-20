@@ -85,15 +85,15 @@ Use `compress` to specify the compression with the following options:
 - `:xz`: XZ
 - `:none`: no compression
 
-The parameter `unit_vsize` specifies the size (in bytes) of an intermediate
-buffer that is used to speed up the writing.
+The parameter `buffer_size` specifies the size (in bytes) of an intermediate
+buffer that is used to speed up the writing by utilizing vectorized writes.
 
 You can also directly provide a preallocated buffer as a `Vector`.
 In that case, `unit_vsize` has no effect.
 Note that `eltype(buffer)` must match the data type of the MRC data.
 """
 write(::Any, ::MRCData)
-function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer::Union{Nothing, Vector}=nothing)
+function Base.write(io::IO, d::MRCData; compress=:none, buffer_size=4096, buffer::Union{Nothing, Vector}=nothing)
     newio = compressstream(io, compress)
     h = header(d)
     sz = write(newio, h)
@@ -101,24 +101,24 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer:
     T = datatype(h)
     data = parent(d)
     fswap = bswapfromh(h.machst)
-    unit_vsize = div(unit_vsize, sizeof(T))
+    buffer_size = div(buffer_size, sizeof(T))
     if buffer === nothing
-        buffer = Vector{T}(undef, unit_vsize)
+        buffer = Vector{T}(undef, buffer_size)
     elseif !(buffer isa Vector{T})
         throw(ArgumentError("`buffer` must be `nothing` or a `Vector{$T}`, but `$(typeof(buffer))` was provided"))
     end
-    # If `buffer` was provided as a parameter then `unit_vsize` is redundant and
+    # If `buffer` was provided as a parameter then `buffer_size` is redundant and
     # we must make sure that it matches `buffer`.
-    unit_vsize = length(buffer)
+    buffer_size = length(buffer)
     vlen = length(data)
-    vrem = vlen % unit_vsize
+    vrem = vlen % buffer_size
     @inbounds @views begin
         if vrem != 0
             buffer[1:vrem] .= fswap.(T.(data[1:vrem]))
             sz += write(newio, buffer[1:vrem])
         end
-        for i in vrem + 1:unit_vsize:vlen
-            buffer .= fswap.(T.(data[i:i + unit_vsize - 1]))
+        for i in vrem + 1:buffer_size:vlen
+            buffer .= fswap.(T.(data[i:i + buffer_size - 1]))
             sz += write(newio, buffer)
         end
     end
