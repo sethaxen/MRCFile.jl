@@ -106,7 +106,7 @@ end
                 # no preallocation
                 io = IOBuffer(; read=true, write=true)
                 write(io, emd3001; buffer_size=buffer_size)
-                closewrite(io)
+                flush(io)
                 seekstart(io)
                 @test read(io, MRCData) == emd3001
                 close(io)
@@ -115,7 +115,7 @@ end
                 io = IOBuffer(; read=true, write=true)
                 buffer = Vector{Float32}(undef, buffer_size)
                 write(io, emd3001; buffer=buffer)
-                closewrite(io)
+                flush(io)
                 seekstart(io)
                 @test read(io, MRCData) == emd3001
                 close(io)
