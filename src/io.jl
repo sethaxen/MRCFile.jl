@@ -104,8 +104,9 @@ function Base.write(io::IO, d::MRCData; compress=:none, unit_vsize=4096, buffer:
     unit_vsize = div(unit_vsize, sizeof(T))
     if buffer === nothing
         buffer = Vector{T}(undef, unit_vsize)
+    elseif !(buffer isa Vector{T})
+        throw(ArgumentError("`buffer` must be `nothing` or a `Vector{$T}`, but `$(typeof(buffer))` was provided"))
     end
-    buffer::Vector{T}
     # If `buffer` was provided as a parameter then `unit_vsize` is redundant and
     # we must make sure that it matches `buffer`.
     unit_vsize = length(buffer)
