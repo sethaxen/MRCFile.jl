@@ -93,3 +93,31 @@
         end
     end
 end
+
+@testset "write" begin
+    @testset "buffer size has no effect on data" begin
+        emd3001 = read("$(@__DIR__)/testdata/emd_3001.map", MRCData)
+        buffer_sizes = [1024, 2048, 4096, 100, 42]
+
+        for buffer_size in buffer_sizes
+            @testset "buffer size: $buffer_size" begin
+                # no preallocation
+                io = IOBuffer(read = true, write = true)
+                mem_non_prealloc = @allocated write(io, emd3001; unit_vsize = buffer_size)
+                closewrite(io)
+                seekstart(io)
+                @test read(io, MRCData) == emd3001
+                close(io)
+
+                # with preallocation
+                io = IOBuffer(read = true, write = true)
+                buffer = Vector{Float32}(undef, buffer_size)
+                mem_prealloc = @allocated write(io, emd3001; buffer)
+                closewrite(io)
+                seekstart(io)
+                @test read(io, MRCData) == emd3001
+                close(io)
+            end
+        end
+    end
+end
