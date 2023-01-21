@@ -41,7 +41,8 @@ end
 @testset "maybeswap" begin
     @test MRCFile.maybeswap(bswap, Int32(5)) === bswap(Int32(5))
     @test MRCFile.maybeswap(bswap, "foo") === "foo"
-    @test MRCFile.maybeswap(bswap, (Int32(5), Int32(6))) === (bswap(Int32(5)), bswap(Int32(6)))
+    @test MRCFile.maybeswap(bswap, (Int32(5), Int32(6))) ===
+        (bswap(Int32(5)), bswap(Int32(6)))
     @test MRCFile.maybeswap(bswap, (0x01, 0x02)) === (0x01, 0x02)
     @test MRCFile.maybeswap(bswap)(Int32(5)) === bswap(Int32(5))
 end
