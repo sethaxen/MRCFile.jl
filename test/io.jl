@@ -11,7 +11,7 @@
             @test h.nx === Int32(size(p)[1]) === Int32(73)
             @test h.ny === Int32(size(p)[2]) === Int32(43)
             @test h.nz === Int32(size(p)[3]) === Int32(25)
-            @test MRC.datatype(h.mode) === eltype(p) === Float32
+            @test MRCFile.datatype(h.mode) === eltype(p) === Float32
             @test h.nxstart === Int32(0)
             @test h.nystart === Int32(-21)
             @test h.nzstart === Int32(-12)
@@ -39,7 +39,7 @@
             @test h.origin_x === Float32(0)
             @test h.origin_y === Float32(0)
             @test h.origin_z === Float32(0)
-            @test h.map === MRC.MAP_NAME
+            @test h.map === MRCFile.MAP_NAME
             @test h.machst === (0x44, 0x41, 0x0, 0x0)
             @test h.rms === Float32(0.15705723)
             @test h.nlabl === Int32(1)
@@ -58,7 +58,7 @@
             @test h.nx === Int32(size(p)[1]) === Int32(20)
             @test h.ny === Int32(size(p)[2]) === Int32(20)
             @test h.nz === Int32(size(p)[3]) === Int32(20)
-            @test MRC.datatype(h.mode) === eltype(p) === Float32
+            @test MRCFile.datatype(h.mode) === eltype(p) === Float32
             @test h.nxstart === Int32(-2)
             @test h.nystart === Int32(0)
             @test h.nzstart === Int32(0)
@@ -86,7 +86,7 @@
             @test h.origin_x === Float32(0)
             @test h.origin_y === Float32(0)
             @test h.origin_z === Float32(0)
-            @test h.map === MRC.MAP_NAME
+            @test h.map === MRCFile.MAP_NAME
             @test h.machst === (0x44, 0x41, 0x0, 0x0)
             @test h.rms === Float32(2.399953)
             @test h.nlabl === Int32(1)

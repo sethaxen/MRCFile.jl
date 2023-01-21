@@ -73,7 +73,7 @@ function MRCHeader(; kwargs...)
         -1, # rms < 0 means rms is undetermined
         1, # nlabl
         (
-            "Created by MRC.jl at $(Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))",
+            "Created by MRCFile.jl at $(Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))",
             ntuple(_ -> "", Val(9))...,
         ), # label
     )
