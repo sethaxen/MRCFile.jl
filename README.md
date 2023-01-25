@@ -1,7 +1,7 @@
 # MRCFile.jl
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
-[![Build Status](https://github.com/sethaxen/MRCFile.jl/workflows/CI/badge.svg)](https://github.com/sethaxen/MRCFile.jl/actions?query=workflow%3ACI+branch%3Amaster)
-[![Coverage](https://codecov.io/gh/sethaxen/MRCFile.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/sethaxen/MRCFile.jl)
+[![Build Status](https://github.com/sethaxen/MRCFile.jl/workflows/CI/badge.svg)](https://github.com/sethaxen/MRCFile.jl/actions?query=workflow%3ACI+branch%main)
+[![Coverage](https://codecov.io/gh/sethaxen/MRCFile.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/sethaxen/MRCFile.jl)
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://sethaxen.github.io/MRCFile.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://sethaxen.github.io/MRCFile.jl/dev)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
@@ -48,7 +48,7 @@ end
 gif(anim, "emd-$(emdid)_slices.gif", fps = 30)
 ```
 
-![EMD-5778 slices](https://github.com/sethaxen/MRCFile.jl/blob/master/docs/src/assets/emd-5778_slices.gif)
+![EMD-5778 slices](https://github.com/sethaxen/MRCFile.jl/blob/main/docs/src/assets/emd-5778_slices.gif)
 
 # Reading a map as a memory-mapped array
 
