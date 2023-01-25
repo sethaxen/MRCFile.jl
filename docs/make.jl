@@ -13,4 +13,4 @@ makedocs(;
     pages=["Home" => "index.md", "API" => "api.md"],
 )
 
-deploydocs(; repo="github.com/sethaxen/MRCFile.jl")
+deploydocs(; repo="github.com/sethaxen/MRCFile.jl", devbranch="main")
