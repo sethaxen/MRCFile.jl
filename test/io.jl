@@ -4,7 +4,9 @@
             emd3001 = read("$(@__DIR__)/testdata/emd_3001.map", MRCData)
             emd3001gz = read("$(@__DIR__)/testdata/emd_3001.map.gz", MRCData)
             emd3001bz2 = read("$(@__DIR__)/testdata/emd_3001.map.bz2", MRCData)
+            emd3001_f16 = read("$(@__DIR__)/testdata/emd_3001_f16.mrc", MRCData)
             @test emd3001 == emd3001gz == emd3001bz2
+            @test (emd3001.data .|> Float16) ≈ emd3001_f16.data
             h = header(emd3001)
             eh = extendedheader(emd3001)
             p = parent(emd3001)
@@ -47,11 +49,18 @@
                 ("::::EMDATABANK.org::::EMD-3001::::", "", "", "", "", "", "", "", "", "")
         end
 
+        @testset "emd_3001_projections" begin
+            emd3001_projections = read("$(@__DIR__)/testdata/emd_3001_proj.mrcs", MRCData)
+            @test size(emd3001_projections) == (73, 43, 10)
+        end
+
         @testset "emd3197.map" begin
             emd3197 = read("$(@__DIR__)/testdata/emd_3197.map", MRCData)
             emd3197gz = read("$(@__DIR__)/testdata/emd_3197.map.gz", MRCData)
             emd3197bz2 = read("$(@__DIR__)/testdata/emd_3197.map.bz2", MRCData)
+            emd3197_f16 = read("$(@__DIR__)/testdata/emd_3197_f16.mrc", MRCData)
             @test emd3197 == emd3197gz == emd3197bz2
+            @test (emd3197.data .|> Float16) ≈ emd3197_f16.data
             h = header(emd3197)
             eh = extendedheader(emd3197)
             p = parent(emd3197)
@@ -92,6 +101,11 @@
             @test h.nlabl === Int32(1)
             @test h.label ==
                 ("::::EMDATABANK.org::::EMD-3197::::", "", "", "", "", "", "", "", "", "")
+        end
+
+        @testset "emd_3197_projections" begin
+            emd3197_projections = read("$(@__DIR__)/testdata/emd_3197_proj.mrcs", MRCData)
+            @test size(emd3197_projections) == (20, 20, 10)
         end
     end
 end
