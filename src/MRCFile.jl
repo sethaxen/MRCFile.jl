@@ -64,6 +64,7 @@ const MODE_TO_TYPE = Dict(
     Int32(3) => Complex{Int16},
     Int32(4) => ComplexF32,
     Int32(6) => UInt16,
+    Int32(12) => Float16
 )
 const TYPE_TO_MODE = Dict(reverse(p) for p in MODE_TO_TYPE)
 const MRC2014_VERSION = Int32(20140)
