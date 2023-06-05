@@ -299,7 +299,7 @@ Statistics.mean(h::MRCHeader) = h.dmean
 
 function mrcdatatype(nz, mz, ispg)
     return if ispg == 0
-        ifelse(nz/mz == 1, Image, ImageStack)
+        ifelse(nz == 1, Image, ImageStack)
     elseif ispg == 1 && mz == nz
         Volume
     elseif ispg ∈ 401:630
