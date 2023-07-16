@@ -5,4 +5,5 @@ using Test
     include("utils.jl")
     include("header.jl")
     include("io.jl")
+    include("data.jl")
 end
