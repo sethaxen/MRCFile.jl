@@ -1,22 +1,22 @@
 @testset "MRCData" begin
     @testset "MRCData(header, extendedheader, data)" begin
-        h = MRCHeader()  
-        eh = MRCExtendedHeader()
-        data = Array{Float32, 3}(undef, (2, 2, 2))
-        d = MRCData(h, eh, data)
+        h = MRCHeader()
+        exh = MRCExtendedHeader()
+        data = Array{Float32,3}(undef, (2, 2, 2))
+        d = MRCData(h, exh, data)
         @test d.header === h
-        @test d.extendedheader === eh
+        @test d.extendedheader === exh
         @test d.data === data
         @test eltype(d) === Float32
         @test ndims(d) === 3
     end
 
     @testset "MRCData(header, extendedheader)" begin
-        h = MRCHeader()  
-        eh = MRCExtendedHeader()
-        d = MRCData(h, eh)
+        h = MRCHeader()
+        exh = MRCExtendedHeader()
+        d = MRCData(h, exh)
         @test d.header === h
-        @test d.extendedheader === eh
+        @test d.extendedheader === exh
         @test ndims(d) == ndims(h)
         @test size(d) == size(h)
     end
@@ -35,17 +35,17 @@
             @test h.nz == 30
         end
     end
-    
+
     @testset "MRCData(size::Integer...)" begin
         d1 = MRCData(10, 20, 30)
         d2 = MRCData((10, 20, 30))
         @test size(d1) == size(d2)
     end
 
-    data = fill(1f0, (2, 2, 2))
-    h = MRCHeader() 
-    eh = MRCExtendedHeader()
-    d = MRCData(h, eh, data)
+    data = fill(1.0f0, (2, 2, 2))
+    h = MRCHeader()
+    exh = MRCExtendedHeader()
+    d = MRCData(h, exh, data)
 
     @testset "getindex" begin
         @test d[1, 1, 1] == 1.0f0
@@ -57,7 +57,7 @@
         @test d[1, 2, 2] == 1.0f0
         @test d[2, 2, 2] == 1.0f0
     end
-    
+
     @testset "setindex!" begin
         d[1, 1, 1] = 10
         d[2, 1, 1] = 20
@@ -76,27 +76,27 @@
         @test d[1, 2, 2] == 70
         @test d[2, 2, 2] == 80
     end
-    
+
     @testset "size" begin
         @test size(d) == (2, 2, 2)
         @test size(d, 1) == 2
         @test size(d, 2) == 2
         @test size(d, 3) == 2
     end
-    
+
     @testset "ndims" begin
         @test ndims(d) == 3
     end
-    
+
     @testset "length" begin
         @test length(d) == 8
     end
-    
+
     @testset "iterate" begin
         iter = iterate(d)
         @test iter !== nothing && first(iter) == 10
     end
-    
+
     @testset "lastindex" begin
         @test lastindex(d) == 8
     end
@@ -114,13 +114,13 @@
 end
 
 @testset "updateheader!(d::MRCData; statistics=true)" begin
-    data = fill(1f0, (2, 2, 2))
-    h = MRCHeader()  
+    data = fill(1.0f0, (2, 2, 2))
+    h = MRCHeader()
     @test h.nx == 0
     @test h.ny == 0
     @test h.nz == 0
-    eh = MRCExtendedHeader()
-    d = MRCData(h, eh, data)
+    exh = MRCExtendedHeader()
+    d = MRCData(h, exh, data)
     updateheader!(d)
     @test d.header.dmin == 1.0f0
     @test d.header.dmax == 1.0f0
