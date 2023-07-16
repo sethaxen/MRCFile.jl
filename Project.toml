@@ -1,7 +1,7 @@
 name = "MRCFile"
 uuid = "c18c01d3-0ab9-49c3-bd2d-8f2e64a2b7a5"
 authors = ["Seth Axen <seth@sethaxen.com>"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 CodecBzip2 = "523fee87-0ab8-5b00-afb7-3ecf72e48cfd"

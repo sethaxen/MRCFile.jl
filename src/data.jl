@@ -90,7 +90,7 @@ function updateheader!(d::MRCData; statistics=true)
 
     # misc
     h.mode = TYPE_TO_MODE[eltype(d)]
-    h.nsymbt = bytesize(extendedheader(d))
+    h.nsymbt = sizeof(extendedheader(d))
     h.nlabl = sum(s -> length(rstrip(s)) > 0, h.label)
 
     # update statistics
