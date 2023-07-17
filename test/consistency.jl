@@ -8,9 +8,11 @@ mrcfile = pyimport("mrcfile")
 
 @testset "Consistency Test" begin
     function map_test(map_jl::Array{Float32,3}, map_py::Array{Float32,3})
+        # dimensions permuted due to row-major storage in Python and col-major in Julia
+        # see https://github.com/sethaxen/MRCFile.jl/issues/10
+        @test_broken map_jl == map_py
         permuted_py = permutedims(map_py, (3, 2, 1))
         @test map_jl == permuted_py
-        # @test map_jl == map_py
     end
 
     function header_test(header_jl::MRCHeader, header_py::Py)
