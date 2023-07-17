@@ -178,7 +178,7 @@ end
 
 @testset "size(::MRCHeader)" begin
     h = MRCHeader(; nx=10, ny=20, nz=30)
-    @test size(h) == (10, 20, 30)
+    @test size(h) == (30, 20, 10)
 end
 
 @testset "length(::MRCHeader)" begin

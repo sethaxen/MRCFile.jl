@@ -8,9 +8,9 @@
             h = header(emd3001)
             eh = extendedheader(emd3001)
             p = parent(emd3001)
-            @test h.nx === Int32(size(p)[1]) === Int32(73)
+            @test h.nx === Int32(size(p)[3]) === Int32(73)
             @test h.ny === Int32(size(p)[2]) === Int32(43)
-            @test h.nz === Int32(size(p)[3]) === Int32(25)
+            @test h.nz === Int32(size(p)[1]) === Int32(25)
             @test MRCFile.datatype(h.mode) === eltype(p) === Float32
             @test h.nxstart === Int32(0)
             @test h.nystart === Int32(-21)

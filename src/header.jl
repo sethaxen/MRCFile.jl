@@ -136,7 +136,7 @@ end
     return offsets
 end
 
-Base.size(h::MRCHeader) = (h.nx, h.ny, h.nz)
+Base.size(h::MRCHeader) = (h.nz, h.ny, h.nx)
 
 Base.length(h::MRCHeader) = prod(size(h))
 

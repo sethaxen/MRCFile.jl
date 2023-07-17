@@ -25,24 +25,26 @@ Create an array of the specified size.
 struct MRCData{T<:Number,N,EH,D} <: AbstractArray{T,N}
     header::MRCHeader
     extendedheader::EH
-    data::D
+    original_data::D
+end
+function ReadMRCData(header, extendedheader, data::AbstractArray{T,N}) where {T,N}
+    return MRCData{T,N,typeof(extendedheader),typeof(data)}(header, extendedheader, data)
 end
 function MRCData(header, extendedheader, data::AbstractArray{T,N}) where {T,N}
+    data = permutedims(data, reverse(1:N))
     return MRCData{T,N,typeof(extendedheader),typeof(data)}(header, extendedheader, data)
 end
 function MRCData(header=MRCHeader(), extendedheader=MRCExtendedHeader())
     data_size = size(header)
-    data_length = prod(data_size)
     dtype = datatype(header)
     dims = ndims(header)
-    s = ntuple(i -> data_size[i], dims)
-    data = Array{dtype,dims}(undef, s)
-    return MRCData(header, extendedheader, data)
+    original_data = Array{dtype,dims}(undef, reverse(data_size))
+    return ReadMRCData(header, extendedheader, original_data)
 end
 function MRCData(size::NTuple{3,<:Integer})
     header = MRCHeader()
     for i in 1:3
-        setproperty!(header, (:nx, :ny, :nz)[i], size[i])
+        setproperty!(header, (:nz, :ny, :nx)[i], size[i])
     end
     return MRCData(header)
 end
@@ -63,6 +65,13 @@ Get extended header.
 extendedheader(d::MRCData) = d.extendedheader
 
 """
+    data(d::MRCData) -> AbstractArray
+
+Get header.
+"""
+data(d::MRCData) = parent(d)
+
+"""
     updateheader!(data::MRCData; statistics = true)
 
 Update the header stored in `data` from the data and its extended header.
@@ -74,7 +83,7 @@ function updateheader!(d::MRCData; statistics=true)
     # update size
     s = size(d)
     for i in eachindex(s)
-        setproperty!(h, (:nx, :ny, :nz)[i], s[i])
+        setproperty!(h, (:nz, :ny, :nx)[i], s[i])
     end
 
     # update space group
@@ -104,7 +113,7 @@ function updateheader!(d::MRCData; statistics=true)
 end
 
 # Array overloads
-@inline Base.parent(d::MRCData) = d.data
+@inline Base.parent(d::MRCData) = PermutedDimsArray(d.original_data, reverse(1:ndims(d.original_data)))
 
 @inline Base.getindex(d::MRCData, idx::Int...) = getindex(parent(d), idx...)
 
@@ -134,21 +143,21 @@ end
 
 Return an iterator over map rows.
 """
-eachmaprow(d::MRCData) = eachslice(d; dims=header(d).mapr)
+eachmaprow(d::MRCData) = eachslice(d; dims=ndims(d)-header(d).mapr+1)
 
 """
     eachmapcol(d::MRCData)
 
 Return an iterator over columns.
 """
-eachmapcol(d::MRCData) = eachslice(d; dims=header(d).mapc)
+eachmapcol(d::MRCData) = eachslice(d; dims=ndims(d)-header(d).mapc+1)
 
 """
     eachmapsection(d::MRCData)
 
 Return an iterator over sections.
 """
-eachmapsection(d::MRCData) = eachslice(d; dims=header(d).maps)
+eachmapsection(d::MRCData) = eachslice(d; dims=ndims(d)-header(d).maps+1)
 
 """
     eachstackunit(d::MRCData)
