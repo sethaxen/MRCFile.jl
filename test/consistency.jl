@@ -1,11 +1,9 @@
 using Test
 using PyCall
+using Conda
 
-py"""
-import pip
-pip.main(['install', 'mrcfile'])
-pip.main(['install', 'numpy'])
-"""
+Conda.pip_interop(true)
+Conda.pip("install", ["mrcfile", "numpy"])
 
 # Load the Python module/package
 mrcfile = pyimport("mrcfile")
