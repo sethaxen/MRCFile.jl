@@ -1,13 +1,12 @@
 using Test
-using PyCall
 using Conda
+Conda.add("numpy")
+Conda.add("mrcfile")
 
-Conda.pip_interop(true)
-Conda.pip("install", ["mrcfile", "numpy"])
-
+using PyCall
 # Load the Python module/package
-mrcfile = pyimport("mrcfile")
 numpy = pyimport("numpy")
+mrcfile = pyimport("mrcfile")
 
 @testset "Consistency Test" begin
     function map_test(map_jl::Array{Float32,3}, map_py::Array{Float32,3})
