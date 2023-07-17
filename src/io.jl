@@ -63,7 +63,7 @@ Read MRC file or stream, using a memory-mapped array to access the data.
 function read_mmap(io::IO, ::Type{MRCData})
     head = read(io, MRCHeader)
     exthead = read(io, MRCExtendedHeader; header=head)
-    arraytype = Array{MRC.datatype(head),ndims(head)}
+    arraytype = Array{datatype(head),ndims(head)}
     data = Mmap.mmap(io, arraytype, size(head)[1:ndims(head)])
     return MRCData(head, exthead, data)
 end

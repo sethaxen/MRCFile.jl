@@ -33,7 +33,7 @@
             @test h.ispg === Int32(4)
             @test h.nsymbt == sizeof(eh) == Int32(160)
             @test h.extra1 === Tuple(zeros(UInt8, 8))
-            @test h.exttyp === ""
+            @test h.exttyp === "\0\0\0\0"
             @test h.nversion === Int32(0)
             @test h.extra2 === Tuple(zeros(UInt8, 84))
             @test h.origin_x === Float32(0)
@@ -80,7 +80,7 @@
             @test h.ispg === Int32(1)
             @test h.nsymbt == sizeof(eh) == Int32(0)
             @test h.extra1 === Tuple(zeros(UInt8, 8))
-            @test h.exttyp === ""
+            @test h.exttyp === "\0\0\0\0"
             @test h.nversion === Int32(0)
             @test h.extra2 === Tuple(zeros(UInt8, 84))
             @test h.origin_x === Float32(0)
@@ -94,6 +94,12 @@
                 ("::::EMDATABANK.org::::EMD-3197::::", "", "", "", "", "", "", "", "", "")
         end
     end
+end
+
+@testset "read_mmap" begin
+    emd3001 = read("$(@__DIR__)/testdata/emd_3001.map", MRCData)
+    emd3001mmap = read_mmap("$(@__DIR__)/testdata/emd_3001.map", MRCData)
+    @test emd3001 == emd3001mmap
 end
 
 @testset "write" begin

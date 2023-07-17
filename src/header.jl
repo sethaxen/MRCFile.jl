@@ -111,7 +111,7 @@ function sizeoffield(name, type)
 end
 
 function bytestoentry(name, type, pointer)
-    name === :exttyp && return _unsafe_string(pointer, 4)
+    name === :exttyp && return unsafe_string(convert(Ptr{UInt8}, pointer), 4)
     name === :map && return _unsafe_string(pointer, 4)
     name === :label && return ntuple(Val(10)) do i
         return strip(_unsafe_string(pointer + (i - 1) * 80, 80), ' ')
