@@ -66,7 +66,6 @@ function read_mmap(io::IO, ::Type{MRCData})
     arraytype = Array{datatype(head),ndims(head)}
     data = Mmap.mmap(io, arraytype, reverse(size(head)))
     return ReadMRCData(head, exthead, data)
-
 end
 function read_mmap(path::AbstractString, T::Type{MRCData})
     return open(path, "r") do io
