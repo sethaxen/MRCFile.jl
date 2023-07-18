@@ -10,7 +10,12 @@ makedocs(;
         canonical="https://sethaxen.github.io/MRCFile.jl",
         assets=String[],
     ),
-    pages=["Home" => "index.md", "API" => "api.md"],
+    pages=[
+        "Home" => "index.md",
+        "Documentation" => "documentation.md",
+        "Examples" => "examples.md",
+        "API" => "api.md",
+    ],
 )
 
 deploydocs(; repo="github.com/sethaxen/MRCFile.jl", devbranch="main")

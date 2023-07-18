@@ -67,7 +67,7 @@ extendedheader(d::MRCData) = d.extendedheader
 """
     data(d::MRCData) -> AbstractArray
 
-Get header.
+Get data.
 """
 data(d::MRCData) = parent(d)
 
@@ -143,21 +143,21 @@ end
 
 Return an iterator over map rows.
 """
-eachmaprow(d::MRCData) = eachslice(d; dims=ndims(d)-header(d).mapr+1)
+eachmaprow(d::MRCData) = eachslice(d; dims=ndims(d) - header(d).mapr + 1)
 
 """
     eachmapcol(d::MRCData)
 
 Return an iterator over columns.
 """
-eachmapcol(d::MRCData) = eachslice(d; dims=ndims(d)-header(d).mapc+1)
+eachmapcol(d::MRCData) = eachslice(d; dims=ndims(d) - header(d).mapc + 1)
 
 """
     eachmapsection(d::MRCData)
 
 Return an iterator over sections.
 """
-eachmapsection(d::MRCData) = eachslice(d; dims=ndims(d)-header(d).maps+1)
+eachmapsection(d::MRCData) = eachslice(d; dims=ndims(d) - header(d).maps + 1)
 
 """
     eachstackunit(d::MRCData)
