@@ -113,7 +113,9 @@ function updateheader!(d::MRCData; statistics=true)
 end
 
 # Array overloads
-@inline Base.parent(d::MRCData) = PermutedDimsArray(d.original_data, reverse(1:ndims(d.original_data)))
+@inline function Base.parent(d::MRCData)
+    return PermutedDimsArray(d.original_data, reverse(1:ndims(d.original_data)))
+end
 
 @inline Base.getindex(d::MRCData, idx::Int...) = getindex(parent(d), idx...)
 
