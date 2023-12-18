@@ -2,11 +2,11 @@
     @testset "MRCData(header, extendedheader, data)" begin
         h = MRCHeader()
         exh = MRCExtendedHeader()
-        data = Array{Float32,3}(undef, (2, 2, 2))
-        d = MRCData(h, exh, data)
+        map_data = Array{Float32,3}(undef, (2, 2, 2))
+        d = MRCData(h, exh, map_data)
         @test d.header === h
         @test d.extendedheader === exh
-        @test d.data === data
+        @test data(d) == map_data
         @test eltype(d) === Float32
         @test ndims(d) === 3
     end
@@ -24,15 +24,16 @@
     @testset "MRCData(size::NTuple{3,<:Integer})" begin
         d = MRCData((10, 20, 30))
         @test size(d) == (10, 20, 30)
-        @test size(d.data) == (10, 20, 30)
+        @test size(data(d)) == (10, 20, 30)
+        @test size(d.original_data) == (30, 20, 10)
         @test ndims(d) == 3
-        @test ndims(d.data) == 3
+        @test ndims(d.original_data) == 3
 
         @testset "header(d::MRCData)" begin
             h = header(d)
-            @test h.nx == 10
+            @test h.nx == 30
             @test h.ny == 20
-            @test h.nz == 30
+            @test h.nz == 10
         end
     end
 
@@ -42,10 +43,10 @@
         @test size(d1) == size(d2)
     end
 
-    data = fill(1.0f0, (2, 2, 2))
+    map_data = fill(1.0f0, (2, 2, 2))
     h = MRCHeader()
     exh = MRCExtendedHeader()
-    d = MRCData(h, exh, data)
+    d = MRCData(h, exh, map_data)
 
     @testset "getindex" begin
         @test d[1, 1, 1] == 1.0f0
@@ -109,18 +110,18 @@
     end
 
     @testset "IndexStyle" begin
-        @test Base.IndexStyle(typeof(d)) == Base.IndexStyle(typeof(d.data))
+        @test Base.IndexStyle(typeof(d)) == Base.IndexStyle(typeof(d.original_data))
     end
 end
 
 @testset "updateheader!(d::MRCData; statistics=true)" begin
-    data = fill(1.0f0, (2, 2, 2))
+    map_data = fill(1.0f0, (2, 2, 2))
     h = MRCHeader()
     @test h.nx == 0
     @test h.ny == 0
     @test h.nz == 0
     exh = MRCExtendedHeader()
-    d = MRCData(h, exh, data)
+    d = MRCData(h, exh, map_data)
     updateheader!(d)
     @test d.header.dmin == 1.0f0
     @test d.header.dmax == 1.0f0

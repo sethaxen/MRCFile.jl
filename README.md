@@ -1,4 +1,5 @@
 # MRCFile.jl
+
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
 [![Build Status](https://github.com/sethaxen/MRCFile.jl/workflows/CI/badge.svg)](https://github.com/sethaxen/MRCFile.jl/actions?query=workflow%3ACI+branch%main)
 [![Coverage](https://codecov.io/gh/sethaxen/MRCFile.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/sethaxen/MRCFile.jl)
@@ -6,11 +7,15 @@
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://sethaxen.github.io/MRCFile.jl/dev)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 
+## Description
+
 MRCFile.jl implements the [MRC2014 format](https://www.ccpem.ac.uk/mrc_format/mrc2014.php) for storing image and volume data such as those produced by electron microscopy.
 It offers the ability to read, edit, and write MRC files, as well as utility functions for extracting useful information from the headers.
 
 The key type is `MRCData`, which contains the contents of the MRC file, accessible with `header` and `extendedheader`.
 `MRCData` is an `AbstractArray` whose elements are those of the data portion of the file and can be accessed or modified accordingly.
+
+**Notice:** Since `1.1.3`, the `MRCData` is represent as row-major order to meet the requirement of [MRC2014 spec](https://www.ccpem.ac.uk/mrc_format/mrc2014.php).
 
 ## Installation
 
@@ -18,6 +23,14 @@ The key type is `MRCData`, which contains the contents of the MRC file, accessib
 using Pkg
 Pkg.add("MRCFile")
 ```
+
+or install from the Julia package REPL, which can be accessed by pressing `]` from the Julia REPL:
+
+```julia
+add MRCFile
+```
+
+See the [documentation](https://sethaxen.github.io/MRCFile.jl/stable/) for information on how to use MRCFile.
 
 ## Example
 
@@ -50,7 +63,7 @@ gif(anim, "emd-$(emdid)_slices.gif", fps = 30)
 
 ![EMD-5778 slices](https://github.com/sethaxen/MRCFile.jl/blob/main/docs/src/assets/emd-5778_slices.gif)
 
-# Reading a map as a memory-mapped array
+## Reading a map as a memory-mapped array
 
 MRC files can be huge.
 It is convenient then to load their data as [memory-mapped arrays](https://docs.julialang.org/en/v1/stdlib/Mmap/).

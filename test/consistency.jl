@@ -6,12 +6,8 @@ using PythonCall
 numpy = pyimport("numpy")
 mrcfile = pyimport("mrcfile")
 
-function compare_map(map_jl::Array{Float32,3}, map_py::Array{Float32,3})
-    # dimensions permuted due to row-major storage in Python and col-major in Julia
-    # see https://github.com/sethaxen/MRCFile.jl/issues/10
-    @test_broken map_jl == map_py
-    permuted_py = permutedims(map_py, (3, 2, 1))
-    @test map_jl == permuted_py
+function compare_map(map_jl::AbstractArray{Float32,3}, map_py::AbstractArray{Float32,3})
+    @test map_jl == map_py
 end
 
 function compare_header(header_jl::MRCHeader, header_py::Py)
@@ -60,7 +56,7 @@ end
 
 function compare_mrcfile(map_path::String)
     emd_jl = read(map_path, MRCData)
-    map_jl = emd_jl.data
+    map_jl = data(emd_jl)
     header_jl = header(emd_jl)
     exh_jl = extendedheader(emd_jl)
 

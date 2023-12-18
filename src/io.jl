@@ -19,9 +19,9 @@ function Base.read(io::IO, ::Type{T}; compress=:auto) where {T<:MRCData}
     header = read(newio, MRCHeader)
     extendedheader = read(newio, MRCExtendedHeader; header=header)
     d = MRCData(header, extendedheader)
-    read!(newio, d.data)
+    read!(newio, d.original_data)
     close(newio)
-    map!(bswaptoh(header.machst), d.data, d.data)
+    map!(bswaptoh(header.machst), d.original_data, d.original_data)
     return d
 end
 function Base.read(fn::AbstractString, ::Type{T}; compress=:auto) where {T<:MRCData}
@@ -64,8 +64,8 @@ function read_mmap(io::IO, ::Type{MRCData})
     head = read(io, MRCHeader)
     exthead = read(io, MRCExtendedHeader; header=head)
     arraytype = Array{datatype(head),ndims(head)}
-    data = Mmap.mmap(io, arraytype, size(head)[1:ndims(head)])
-    return MRCData(head, exthead, data)
+    data = Mmap.mmap(io, arraytype, reverse(size(head)))
+    return ReadMRCData(head, exthead, data)
 end
 function read_mmap(path::AbstractString, T::Type{MRCData})
     return open(path, "r") do io
@@ -105,7 +105,7 @@ function Base.write(
     sz = write(newio, h)
     sz += write(newio, extendedheader(d))
     T = datatype(h)
-    data = parent(d)
+    original_data = d.original_data
     fswap = bswapfromh(h.machst)
     buffer_size = div(buffer_size, sizeof(T))
     if buffer === nothing
@@ -120,15 +120,15 @@ function Base.write(
     # If `buffer` was provided as a parameter then `buffer_size` is redundant and
     # we must make sure that it matches `buffer`.
     buffer_size = length(buffer)
-    vlen = length(data)
+    vlen = length(original_data)
     vrem = vlen % buffer_size
     @inbounds @views begin
         if vrem != 0
-            buffer[1:vrem] .= fswap.(T.(data[1:vrem]))
+            buffer[1:vrem] .= fswap.(T.(original_data[1:vrem]))
             sz += write(newio, buffer[1:vrem])
         end
         for i in (vrem + 1):buffer_size:vlen
-            buffer .= fswap.(T.(data[i:(i + buffer_size - 1)]))
+            buffer .= fswap.(T.(original_data[i:(i + buffer_size - 1)]))
             sz += write(newio, buffer)
         end
     end
