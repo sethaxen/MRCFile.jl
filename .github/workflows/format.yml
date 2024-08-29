@@ -11,8 +11,8 @@ jobs:
     name: "Format Check"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@v1
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
       - name: Install JuliaFormatter and format
         run: |
           julia  -e 'using Pkg; Pkg.add(PackageSpec(name="JuliaFormatter"))'
