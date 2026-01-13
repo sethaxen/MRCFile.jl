@@ -1,7 +1,7 @@
 name = "MRCFile"
 uuid = "c18c01d3-0ab9-49c3-bd2d-8f2e64a2b7a5"
-authors = ["Seth Axen <seth@sethaxen.com>"]
 version = "0.1.4"
+authors = ["Seth Axen <seth@sethaxen.com>"]
 
 [deps]
 CodecBzip2 = "523fee87-0ab8-5b00-afb7-3ecf72e48cfd"
@@ -11,6 +11,12 @@ Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Mmap = "a63ad114-7e13-5084-954f-fe012c677804"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 TranscodingStreams = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
+
+[weakdeps]
+DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
+
+[extensions]
+DimensionalDataExt = "DimensionalData"
 
 [compat]
 CodecBzip2 = "0.7, 0.8"
@@ -24,6 +30,7 @@ julia = "^1"
 CondaPkg = "992eb4ea-22a4-4c89-a5bb-47a3300528ab"
 PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
 
 [targets]
-test = ["CondaPkg", "PythonCall", "Test"]
+test = ["CondaPkg", "PythonCall", "Test", "DimensionalData"]
