@@ -28,9 +28,9 @@ julia = "^1"
 
 [extras]
 CondaPkg = "992eb4ea-22a4-4c89-a5bb-47a3300528ab"
+DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
 PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
 
 [targets]
-test = ["CondaPkg", "PythonCall", "Test", "DimensionalData"]
+test = ["CondaPkg", "DimensionalData", "PythonCall", "Test"]
