@@ -55,7 +55,7 @@ function compare_header(header_jl::MRCHeader, header_py::Py)
     @test Bool(header_jl.rms == header_py.rms)
     @test Bool(header_jl.nlabl == header_py.nlabl)
     @test join(header_jl.label) ==
-        pyconvert(String, header_py.label.tostring().decode().strip())
+        pyconvert(String, header_py.label.tobytes().decode().strip())
 end
 
 function compare_extendedheader(exh_jl::MRCExtendedHeader, exh_py::Py)
