@@ -1,5 +1,9 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+MRCFile = "c18c01d3-0ab9-49c3-bd2d-8f2e64a2b7a5"
 
 [compat]
 Documenter = "~0.24"
+
+[sources.MRCFile]
+path = ".."
