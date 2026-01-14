@@ -1,6 +1,10 @@
-using Test
 using CondaPkg
+
+testproj_dir = dirname(Base.load_path()[1])
+cp(joinpath(@__DIR__, "CondaPkg.toml"), joinpath(testproj_dir, "CondaPkg.toml"))
+
 using PythonCall
+using Test
 
 # Load the Python module/package
 numpy = pyimport("numpy")
