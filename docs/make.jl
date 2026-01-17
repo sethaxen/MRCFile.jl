@@ -12,6 +12,7 @@ makedocs(;
         assets=String[],
     ),
     pages=["Home" => "index.md", "API" => "api.md", "Integrations" => "integrations.md"],
+    warnonly=:missing_docs,
 )
 
 deploydocs(; repo="github.com/sethaxen/MRCFile.jl", devbranch="main")
