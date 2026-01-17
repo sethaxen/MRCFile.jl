@@ -27,17 +27,18 @@ To set-up this example, install FTPClient and Plots with
 
 ```julia
 using Pkg
-Pkg.add("FTPClient")
 Pkg.add("Plots")
 ```
 
 ```julia
-using MRCFile, FTPClient, Plots
+using Downloads, MRCFile, Plots
 
+# Download an EM map
 emdid = 5778 # TRPV1
-ftp = FTP(hostname = "ftp.rcsb.org/pub/emdb/structures/EMD-$(emdid)/map")
-dmap = read(download(ftp, "emd_$(emdid).map.gz"), MRCData)
-close(ftp)
+path = "https://ftp.ebi.ac.uk/pub/databases/emdb/structures/EMD-$(emdid)/map"
+filename = Downloads.download(joinpath(path, "emd_$(emdid).map.gz"))
+
+dmap = read(filename, MRCData)
 dmin, dmax = extrema(header(dmap))
 drange = dmax - dmin
 
