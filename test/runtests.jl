@@ -7,5 +7,5 @@ using Test
     include("io.jl")
     include("data.jl")
     include("dimensionaldata.jl")
-    VERSION >= v"1.6" && include("consistency.jl")
+    include("consistency.jl")
 end
