@@ -18,11 +18,13 @@ array.
 function DimArray(mrc::MRCData)
     h = header(mrc)
     axs = voxelaxes(h)
+    #! format: off
     dimaxs = (
         (X, Y, Z)[h.mapc](axs[1]),
         (X, Y, Z)[h.mapr](axs[2]),
         (X, Y, Z)[h.maps](axs[3]),
     )
+    #! format: on
     DimArray(mrc.data, dimaxs)
 end
 end
