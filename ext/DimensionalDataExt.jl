@@ -18,8 +18,11 @@ array.
 function DimArray(mrc::MRCData)
     h = header(mrc)
     axs = voxelaxes(h)
-    dimnames = map(Base.Fix1(getindex, (X, Y, Z)), (h.mapc, h.mapr, h.maps))
-    dimaxs = map((D, ax) -> D(ax), dimnames, axs)
+    dimaxs = (
+        (X, Y, Z)[h.mapc](axs[1]),
+        (X, Y, Z)[h.mapr](axs[2]),
+        (X, Y, Z)[h.maps](axs[3]),
+    )
     DimArray(mrc.data, dimaxs)
 end
 end
