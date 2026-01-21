@@ -6,11 +6,11 @@ using DimensionalData
 
     @test parent(dimarr) == emd3001.data
 
-    ax_x, ax_y, ax_z = voxelaxes(header(emd3001))
+    ax_z, ax_x, ax_y = voxelaxes(header(emd3001))
     @test all(CartesianIndices(emd3001.data)) do ci
-        ix, iy, iz = Tuple(ci)
+        iz, ix, iy = Tuple(ci)
         left = dimarr[X = At(ax_x[ix]), Y = At(ax_y[iy]), Z = At(ax_z[iz])]
-        right = emd3001.data[ix, iy, iz]
+        right = emd3001.data[iz, ix, iy]
         left == right
     end
 end
