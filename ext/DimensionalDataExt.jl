@@ -11,7 +11,9 @@ Convert the MRC data into a `DimArray` from DimensionalData.jl.
 The `DimArray` has `X`, `Y`, `Z` axes according to the voxel axes stored in the
 header.
 
-While the names of the axes may be permuted according to the `mapc`, `mapr`, and `maps` entries in the header, the `DimArray` is always equal to the `MRCData` array.
+While the names of the axes may be permuted according to the `mapc`, `mapr`, and
+`maps` entries in the header, the `DimArray` is always equal to the `MRCData`
+array.
 """
 function DimArray(mrc::MRCData)
     h = header(mrc)
