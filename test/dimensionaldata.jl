@@ -1,16 +1,22 @@
 using DimensionalData
 
 @testset "DimensionalDataExt" begin
-    emd3001 = read("$(@__DIR__)/testdata/emd_3001.map", MRCData)
-    dimarr = DimArray(emd3001)
+    for (id, dimorder) in (("3001", (:z, :x, :y)), ("3197", (:x, :y, :z)))
+        @testset "emd_$id" begin
+            mrc = read("$(@__DIR__)/testdata/emd_$id.map", MRCData)
+            dimarr = DimArray(mrc)
 
-    @test parent(dimarr) == emd3001.data
+            @test parent(dimarr) == mrc.data
 
-    ax_z, ax_x, ax_y = voxelaxes(header(emd3001))
-    @test all(CartesianIndices(emd3001.data)) do ci
-        iz, ix, iy = Tuple(ci)
-        left = dimarr[X = At(ax_x[ix]), Y = At(ax_y[iy]), Z = At(ax_z[iz])]
-        right = emd3001.data[iz, ix, iy]
-        left == right
+            axs = NamedTuple{dimorder}(voxelaxes(header(mrc)))
+            @test all(CartesianIndices(mrc.data)) do ci
+                idcs = NamedTuple{dimorder}(Tuple(ci))
+                left = dimarr[
+                    X = At(axs.x[idcs.x]), Y = At(axs.y[idcs.y]), Z = At(axs.z[idcs.z])
+                ]
+                right = mrc.data[ci]
+                left == right
+            end
+        end
     end
 end
