@@ -6,5 +6,6 @@ using Test
     include("header.jl")
     include("io.jl")
     include("data.jl")
+    include("dimensionaldata.jl")
     include("consistency.jl")
 end

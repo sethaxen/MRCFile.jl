@@ -1,4 +1,5 @@
 using MRCFile
+using DimensionalData
 using Documenter
 
 makedocs(;
@@ -10,7 +11,7 @@ makedocs(;
         canonical="https://sethaxen.github.io/MRCFile.jl",
         assets=String[],
     ),
-    pages=["Home" => "index.md", "API" => "api.md"],
+    pages=["Home" => "index.md", "API" => "api.md", "Integrations" => "integrations.md"],
     warnonly=:missing_docs,
 )
 
