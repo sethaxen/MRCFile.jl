@@ -9,9 +9,9 @@ TranscodingStreams = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
 [compat]
 CondaPkg = "0.2"
 DimensionalData = "0.29, 0.30"
+MRCFile = "0.1.6"
 PythonCall = "0.9"
 Test = "1"
 TranscodingStreams = "0.9, 0.10, 0.11"
-
 [sources.MRCFile]
 path = ".."
