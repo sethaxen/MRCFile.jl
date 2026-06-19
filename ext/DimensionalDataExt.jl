@@ -25,6 +25,6 @@ function DimArray(mrc::MRCData)
         (X, Y, Z)[h.maps](axs[3]),
     )
     #! format: on
-    DimArray(mrc.data, dimaxs)
+    return DimArray(mrc.data, dimaxs)
 end
 end

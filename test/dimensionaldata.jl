@@ -15,7 +15,7 @@ using DimensionalData
                     X = At(axs.x[idcs.x]), Y = At(axs.y[idcs.y]), Z = At(axs.z[idcs.z])
                 ]
                 right = mrc.data[ci]
-                left == right
+                return left == right
             end
         end
     end
