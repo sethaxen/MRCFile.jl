@@ -9,7 +9,6 @@ updates:
     directories: # Location of Julia projects
       - "/"
       - "/docs"
-      - "/docs/MRC/docs"
       - "/test"
     schedule:
       interval: "daily"
