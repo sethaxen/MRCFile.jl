@@ -6,6 +6,6 @@ MRCFile = "c18c01d3-0ab9-49c3-bd2d-8f2e64a2b7a5"
 [compat]
 DimensionalData = "0.30"
 Documenter = "1"
-
+MRCFile = "0.1.6"
 [sources.MRCFile]
 path = ".."
