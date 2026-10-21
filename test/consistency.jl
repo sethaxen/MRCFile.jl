@@ -1,7 +1,9 @@
 using CondaPkg
 
-testproj_dir = dirname(Base.load_path()[1])
-cp(joinpath(@__DIR__, "CondaPkg.toml"), joinpath(testproj_dir, "CondaPkg.toml"))
+# Julia <1.12 runs tests in a sandbox environment, so CondaPkg.toml must be copied there
+condapkg_src = joinpath(@__DIR__, "CondaPkg.toml")
+condapkg_dst = joinpath(dirname(Base.load_path()[1]), "CondaPkg.toml")
+samefile(condapkg_src, condapkg_dst) || cp(condapkg_src, condapkg_dst; force=true)
 
 using PythonCall
 using Test
